@@ -14,11 +14,15 @@ function saveHistory(userId, role, content) {
 
   history.push({
     role,
-    content,
+    parts: [
+      {
+        text: content,
+      },
+    ],
   });
 
   if (history.length > MAX_HISTORY) {
-    history.splice(0, history.length - MAX_HISTORY);
+    history.shift();
   }
 }
 
