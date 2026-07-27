@@ -65,14 +65,9 @@ module.exports = async (client, message) => {
 
 const history = getHistory(message.author.id);
 
-history.push({
-  role: "user",
-  content,
-});
+saveHistory(message.author.id, "user", content);
 
-if (history.length > constants.MAX_HISTORY) {
-  history.shift();
-}
+const history = getHistory(message.author.id);
 
 await message.channel.sendTyping();
 
