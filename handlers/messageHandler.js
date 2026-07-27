@@ -1,9 +1,9 @@
 const config = require("../config");
 const ai = require("./ai");
 
-const conversations = new Map();
-const MAX_HISTORY = 20;
-
+const detectLanguage = require("../utils/language");
+const { getHistory, saveHistory } = require("../utils/memory");
+const constants = require("../utils/constants");
 module.exports = async (client, message) => {
   if (!message.guild) return;
   if (message.author.bot) return;
