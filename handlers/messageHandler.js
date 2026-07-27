@@ -61,7 +61,22 @@ module.exports = async (client, message) => {
       );
     }
 
-    // Continue...
+    const language = detectLanguage(content);
+
+const history = getHistory(message.author.id);
+
+history.push({
+  role: "user",
+  content,
+});
+
+if (history.length > constants.MAX_HISTORY) {
+  history.shift();
+}
+
+await message.channel.sendTyping();
+
+// AI response will be added in Part 2.2
   }
 
   // Bot Commands
@@ -69,7 +84,9 @@ module.exports = async (client, message) => {
 
     if (!isMentioned) return;
 
-    // Continue...
+    return message.reply(
+  `⚙️ This feature is only available in <#${config.channels.botCommands}>.`
+);
   }
 
   // Ticket System
@@ -79,6 +96,7 @@ module.exports = async (client, message) => {
     isXzhTicket
   ) {
 
-    // Continue...
+    // Interview system will be added later.
+return;
   }
 };
