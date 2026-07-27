@@ -10,6 +10,9 @@ const {
 
 const { GoogleGenAI } = require("@google/genai");
 
+const readyEvent = require("./events/ready");
+const messageCreateEvent = require("./events/messageCreate");
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -97,9 +100,15 @@ function detectLanguage(text) {
 }
 
 /* ===========================
-          READY
+          EVENTS
 =========================== */
 
 client.once("clientReady", () => {
-  console.log(`✅ Logged in as ${client.user.tag}`);
+  readyEvent(client);
 });
+
+client.on("messageCreate", async (message) => {
+  await messageCreateEvent(client, message);
+});
+
+client.login(process.env.TOKEN);
