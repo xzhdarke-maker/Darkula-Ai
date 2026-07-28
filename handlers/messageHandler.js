@@ -100,12 +100,12 @@ Rules:
       return message.reply(reply);
 
     } catch (err) {
-      console.error(err);
+  console.error(err);
 
-      return message.reply(
-        "❌ AI is currently unavailable. Please try again later."
-      );
-    }
+  return message.reply(
+    `❌ ${err.message}`
+  );
+        }
 
   }
 
