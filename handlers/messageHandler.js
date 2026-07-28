@@ -135,7 +135,8 @@ Rules:
   const lower = content.toLowerCase();
 
   if (
-    lower === "userinfo" ||
+    lower.startsWith("userinfo") ||
+    lower.startsWith("user info") ||
     lower === "my info" ||
     lower === "who am i" ||
     lower === "about me"
@@ -143,7 +144,9 @@ Rules:
     return userInfo.execute(message);
   }
 
-  return message.reply("❌ Unknown command.");
+  return message.reply(
+    "❌ Unknown command.\nUse a valid command."
+  );
   }
 
   /* ==========================
