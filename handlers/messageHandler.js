@@ -68,7 +68,7 @@ module.exports = async (client, message) => {
     await message.channel.sendTyping();
         try {
       const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-2.5-pro",
         contents: history,
         config: {
           systemInstruction: `
