@@ -52,17 +52,7 @@ module.exports = async (client, message) => {
       .replace(`<@${client.user.id}>`, "")
       .replace(`<@!${client.user.id}>`, "")
       .trim();
-    const lower = content.toLowerCase();
-
-if (
-  lower === "userinfo" ||
-  lower === "my info" ||
-  lower === "who am i" ||
-  lower === "about me"
-) {
-  return userInfo.execute(message);
-}
-
+  
     if (!content.length) {
       return message.reply(
         "👋 Hi! Mention me and ask your question."
