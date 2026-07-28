@@ -104,8 +104,8 @@ return message.reply(reply);
   console.error(err);
 
   if (err.status === 429) {
-    return message.reply(
-      "⚠️ Gemini API quota exceeded. Please try again later."
+  return message.reply(
+    "⚠️ OpenRouter rate limit reached. Please try again later."
     );
   }
 
