@@ -4,6 +4,7 @@ const ai = require("./ai");
 const detectLanguage = require("../utils/language");
 const { getHistory, saveHistory } = require("../utils/memory");
 const constants = require("../utils/constants");
+const userInfo = require("../commands/userinfo");
 
 module.exports = async (client, message) => {
   if (!message.guild) return;
