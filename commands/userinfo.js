@@ -1,6 +1,4 @@
-const {
-  EmbedBuilder
-} = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "userinfo",
@@ -15,28 +13,26 @@ module.exports = {
 
   async execute(message) {
 
-    const member =
-      message.mentions.members.first() ||
-      message.member;
-
+    const mentionedMember = message.mentions.members.first();
+    const member = mentionedMember || message.member;
     const user = member.user;
 
     const roles = member.roles.cache
-      .filter(r => r.name !== "@everyone")
+      .filter(role => role.name !== "@everyone")
       .sort((a, b) => b.position - a.position)
-      .map(r => r.toString());
+      .map(role => role.toString());
 
     const embed = new EmbedBuilder()
-
       .setColor("#5865F2")
 
       .setAuthor({
         name: `${user.username}`,
-        iconURL: user.displayAvatarURL()
+        iconURL: user.displayAvatarURL({ dynamic: true })
       })
 
       .setThumbnail(
         user.displayAvatarURL({
+          dynamic: true,
           size: 1024
         })
       )
@@ -48,7 +44,7 @@ module.exports = {
           inline: true
         },
         {
-          name: "🏷 Display Name",
+          name: "🏷️ Display Name",
           value: member.displayName,
           inline: true
         },
@@ -69,17 +65,13 @@ module.exports = {
         },
         {
           name: `🎭 Roles (${roles.length})`,
-          value:
-            roles.length
-              ? roles.join(" ")
-              : "No Roles",
+          value: roles.length ? roles.join(" ") : "No Roles",
           inline: false
         }
       )
 
       .setFooter({
-        text:
-          "Darkula Assistant • Created by xzhDark"
+        text: "Darkula Assistant • Created by xzhDark"
       })
 
       .setTimestamp();
@@ -87,6 +79,5 @@ module.exports = {
     return message.reply({
       embeds: [embed]
     });
-
   }
 };
