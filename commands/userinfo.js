@@ -1,3 +1,4 @@
+
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
@@ -13,8 +14,12 @@ module.exports = {
 
   async execute(message) {
 
-    const mentionedMember = message.mentions.members.first();
-    const member = mentionedMember || message.member;
+    // Ignore bot mention, use mentioned user if available
+    const member =
+      message.mentions.members
+        .filter(m => m.id !== message.client.user.id)
+        .first() || message.member;
+
     const user = member.user;
 
     const roles = member.roles.cache
@@ -23,7 +28,7 @@ module.exports = {
       .map(role => role.toString());
 
     const embed = new EmbedBuilder()
-      .setColor("#5865F2")
+      .setColor(0x5865F2)
 
       .setAuthor({
         name: `${user.username}`,
@@ -59,13 +64,15 @@ module.exports = {
           inline: false
         },
         {
-          name: "📆 Discord Account Created",
+          name: "📆 Discord Created",
           value: `<t:${Math.floor(user.createdTimestamp / 1000)}:F>`,
           inline: false
         },
         {
           name: `🎭 Roles (${roles.length})`,
-          value: roles.length ? roles.join(" ") : "No Roles",
+          value: roles.length
+            ? roles.join(" ")
+            : "No Roles",
           inline: false
         }
       )
