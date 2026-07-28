@@ -13,12 +13,8 @@ function saveHistory(userId, role, content) {
   const history = getHistory(userId);
 
   history.push({
-    role,
-    parts: [
-      {
-        text: content,
-      },
-    ],
+    role: role === "model" ? "assistant" : role,
+    content: content,
   });
 
   if (history.length > MAX_HISTORY) {
