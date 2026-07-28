@@ -125,10 +125,25 @@ Rules:
 
   if (isBotCommands) {
 
-    if (!isMentioned) return;
-        return message.reply(
-      `⚙️ This feature is only available in the Bot Commands channel.\n\nPlease use <#${config.channels.botCommands}>.`
-    );
+  if (!isMentioned) return;
+
+  const content = message.content
+    .replace(`<@${client.user.id}>`, "")
+    .replace(`<@!${client.user.id}>`, "")
+    .trim();
+
+  const lower = content.toLowerCase();
+
+  if (
+    lower === "userinfo" ||
+    lower === "my info" ||
+    lower === "who am i" ||
+    lower === "about me"
+  ) {
+    return userInfo.execute(message);
+  }
+
+  return message.reply("❌ Unknown command.");
   }
 
   /* ==========================
