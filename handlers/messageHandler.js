@@ -102,8 +102,14 @@ Rules:
     } catch (err) {
   console.error(err);
 
+  if (err.status === 429) {
+    return message.reply(
+      "⚠️ Gemini API quota exceeded. Please try again later."
+    );
+  }
+
   return message.reply(
-    `❌ ${err.message}`
+    "❌ AI is currently unavailable."
   );
         }
 
