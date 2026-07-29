@@ -6,6 +6,7 @@ const { getHistory, saveHistory } = require("../utils/memory");
 const constants = require("../utils/constants");
 
 const userInfo = require("../commands/userinfo");
+const helpCommand = require("../commands/help");
 
 const serverKnowledge = require("../knowledge/serverKnowledge");
 const serverInfo = require("../knowledge/serverInfo");
