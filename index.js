@@ -12,6 +12,7 @@ const { GoogleGenAI } = require("@google/genai");
 
 const readyEvent = require("./events/ready");
 const messageCreateEvent = require("./events/messageCreate");
+const applicationReview = require("./interactions/applicationReview");
 
 const client = new Client({
   intents: [
