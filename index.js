@@ -112,4 +112,8 @@ client.on("messageCreate", async (message) => {
   await messageCreateEvent(client, message);
 });
 
+client.on("interactionCreate", async (interaction) => {
+  await applicationReview(interaction);
+});
+
 client.login(process.env.TOKEN);
