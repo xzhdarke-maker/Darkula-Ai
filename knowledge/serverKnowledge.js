@@ -7,15 +7,22 @@ module.exports = async (message, content) => {
 ========================== */
 
 if (
-  lower.includes("server info") ||
-  lower.includes("serverinfo") ||
-  lower.includes("server id")
-) {
-  await message.reply(
-    `📋 Please use <#${config.channels.botCommands}> for server commands.\n\n🤖 Main Chat is reserved for AI conversations.`
-  );
+lower.includes("server info") ||
+lower.includes("serverinfo") ||
+lower.includes("server id") ||
 
-  return true;
+lower.includes("promotion") ||
+lower.includes("promotion info") ||
+lower.includes("promotion list") ||
+lower.includes("staff promotion")
+) {
+await message.reply(
+`📋 Please use <#${config.channels.botCommands}> for bot commands.
+
+🤖 Main Chat is reserved for AI conversations.`
+);
+
+return true;
 }
 
   /* ==========================
