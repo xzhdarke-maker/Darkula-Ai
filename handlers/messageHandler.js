@@ -66,8 +66,10 @@ module.exports = async (client, message) => {
     const language = detectLanguage(content);
 
 const handled = await serverKnowledge(message, content);
-
 if (handled) return;
+
+const infoHandled = await serverInfo(client, message, content);
+if (infoHandled) return;
 
 saveHistory(message.author.id, "user", content);
 
