@@ -1,14 +1,15 @@
 const config = require("../config");
 
 module.exports = async (client, message, content) => {
-  const lower = content.toLowerCase();
+  const lower = content.toLowerCase().trim();
 
   /* ==========================
           SERVER INFO
   ========================== */
 
   if (
-    lower === "server info" ||
+    lower.includes("server info") ||
+    lower.includes("serverinfo") ||
     lower === "server" ||
     lower.includes("about server")
   ) {
@@ -27,7 +28,6 @@ ${config.server.id}
 🔗 **Server Invite**
 ${config.server.invite}`
     );
-
     return true;
   }
 
@@ -36,13 +36,12 @@ ${config.server.invite}`
   ========================== */
 
   if (
-    lower === "server id" ||
+    lower.includes("server id") ||
     lower.includes("guild id")
   ) {
     await message.reply(
       `🆔 **Server ID**\n${config.server.id}`
     );
-
     return true;
   }
 
@@ -51,13 +50,12 @@ ${config.server.invite}`
   ========================== */
 
   if (
-    lower === "owner" ||
-    lower === "server owner"
+    lower.includes("owner") &&
+    !lower.includes("girls")
   ) {
     await message.reply(
       `👑 **Server Owner**\n<@${config.users.owner}>`
     );
-
     return true;
   }
 
@@ -66,13 +64,12 @@ ${config.server.invite}`
   ========================== */
 
   if (
-    lower === "girls owner" ||
-    lower === "girl owner"
+    lower.includes("girls owner") ||
+    lower.includes("girl owner")
   ) {
     await message.reply(
       `👑 **Girls Owner**\n<@${config.users.girlsOwner}>`
     );
-
     return true;
   }
 
@@ -81,14 +78,12 @@ ${config.server.invite}`
   ========================== */
 
   if (
-    lower === "invite" ||
-    lower === "server invite" ||
-    lower === "join"
+    lower.includes("invite") ||
+    lower.includes("join")
   ) {
     await message.reply(
       `🔗 **Dark Community Invite**\n${config.server.invite}`
     );
-
     return true;
   }
 
