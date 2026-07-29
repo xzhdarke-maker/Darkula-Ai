@@ -22,16 +22,59 @@ module.exports = {
     interviews.set(userId, {
       step: 0,
       answers: [],
-      channelId
+      channelId,
+
+      // V2
+      paused: false,
+      claimedBy: null,
     });
 
     return questions[0];
+  },
+
+  pause(userId, staffId) {
+    const data = interviews.get(userId);
+    if (!data) return false;
+
+    data.paused = true;
+    data.claimedBy = staffId;
+
+    return true;
+  },
+
+  resume(userId) {
+    const data = interviews.get(userId);
+    if (!data) return false;
+
+    data.paused = false;
+    data.claimedBy = null;
+
+    return true;
+  },
+
+  isPaused(userId) {
+    const data = interviews.get(userId);
+    if (!data) return false;
+
+    return data.paused;
+  },
+
+  get(userId) {
+    return interviews.get(userId);
   },
 
   next(userId, answer) {
     const data = interviews.get(userId);
 
     if (!data) return null;
+
+    // Stop interview while claimed
+    if (data.paused) {
+      return {
+        paused: true,
+        claimedBy: data.claimedBy,
+      };
+    }
 
     data.answers.push(answer);
     data.step++;
@@ -46,13 +89,13 @@ module.exports = {
 
       return {
         finished: true,
-        answers
+        answers,
       };
     }
 
     return {
       finished: false,
-      question: questions[data.step]
+      question: questions[data.step],
     };
-  }
+  },
 };
