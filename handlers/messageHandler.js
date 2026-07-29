@@ -11,6 +11,7 @@ const helpCommand = require("../commands/help");
 const serverKnowledge = require("../knowledge/serverKnowledge");
 const serverInfo = require("../knowledge/serverInfo");
 const promotionInfo = require("../knowledge/promotionInfo");
+const faq = require("../knowledge/faq");
 
 module.exports = async (client, message) => {
   if (!message.guild) return;
