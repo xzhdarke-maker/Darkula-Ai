@@ -62,11 +62,15 @@ module.exports = async (client, message) => {
 
     const language = detectLanguage(content);
 
-    saveHistory(message.author.id, "user", content);
+const handled = await serverKnowledge(message, content);
 
-    const history = getHistory(message.author.id);
+if (handled) return;
 
-    await message.channel.sendTyping();
+saveHistory(message.author.id, "user", content);
+
+const history = getHistory(message.author.id);
+
+await message.channel.sendTyping();
         try {
       const response = await ai.chat.completions.create({
   model: "deepseek/deepseek-chat-v3",
