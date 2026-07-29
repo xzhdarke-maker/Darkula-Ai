@@ -149,6 +149,9 @@ return message.reply(reply);
 
     const promotionHandled = await promotionInfo(message, content);
 if (promotionHandled) return;
+
+    const faqHandled = await faq(message, content);
+if (faqHandled) return;
     
   const lower = content.toLowerCase();
 
