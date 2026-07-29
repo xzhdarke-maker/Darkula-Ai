@@ -87,8 +87,6 @@ if (faqHandled) return;
 
 saveHistory(message.author.id, "user", content);
 
-saveHistory(message.author.id, "user", content);
-
 const history = getHistory(message.author.id);
 
 await message.channel.sendTyping();
