@@ -151,6 +151,15 @@ if (promotionHandled) return;
     
   const lower = content.toLowerCase();
 
+    if (
+  lower === "help" ||
+  lower === "commands" ||
+  lower === "command" ||
+  lower === "help command"
+) {
+  return helpCommand.execute(message);
+    }
+
   if (
     lower.startsWith("userinfo") ||
     lower.startsWith("user info") ||
