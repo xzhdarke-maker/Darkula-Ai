@@ -199,8 +199,29 @@ if (faqHandled) return;
   }
 
   if (isStaffTicket) {
-    // Staff Apply Interview
-    return;
+
+  const data = staffInterview.interviews.get(message.author.id);
+
+  // Start interview
+  if (!data) {
+    const firstQuestion = staffInterview.start(message.author.id);
+
+    return message.reply(firstQuestion);
+  }
+
+  // Continue interview
+  const result = staffInterview.next(
+    message.author.id,
+    message.content
+  );
+
+  if (result.finished) {
+    return message.reply(
+      "✅ Your Staff Interview has been completed!\n\nOur Staff Team will review your application soon."
+    );
+  }
+
+  return message.reply(result.question);
   }
 
   if (isXzhTicket) {
