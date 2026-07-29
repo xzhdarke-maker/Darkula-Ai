@@ -66,7 +66,12 @@ module.exports = async (client, message) => {
 
     const language = detectLanguage(content);
 
+console.log("MAIN CHAT:", content);
+
 const handled = await serverKnowledge(message, content);
+
+console.log("handled =", handled);
+
 if (handled) return;
 
 saveHistory(message.author.id, "user", content);
