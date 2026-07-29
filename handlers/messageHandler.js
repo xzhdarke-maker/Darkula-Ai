@@ -13,6 +13,8 @@ const serverInfo = require("../knowledge/serverInfo");
 const promotionInfo = require("../knowledge/promotionInfo");
 const faq = require("../knowledge/faq");
 
+const staffInterview = require("../interviews/staffInterview");
+
 module.exports = async (client, message) => {
   if (!message.guild) return;
   if (message.author.bot) return;
