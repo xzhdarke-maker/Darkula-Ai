@@ -136,6 +136,9 @@ return message.reply(reply);
     .replace(`<@!${client.user.id}>`, "")
     .trim();
 
+  const infoHandled = await serverInfo(client, message, content);
+  if (infoHandled) return;
+
   const lower = content.toLowerCase();
 
   if (
