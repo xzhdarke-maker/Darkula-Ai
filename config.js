@@ -1,8 +1,20 @@
 module.exports = {
   channels: {
+    // Main
     mainChat: "1401958567673725073",
     botCommands: "1530546214146412574",
     interviewLogs: "1531284574426890421",
+
+    // Server Information
+    announcement: "1401958533259464866",
+    inviteCheck: "1401958587500335319",
+    rankCheck: "1401958586396971028",
+    helpSupport: "1401958591409426473",
+    selfRole: "1431469976237379655",
+    rules: "1401958531091009658",
+    inviteRewards: "1401958536287879270",
+    staffApplyChannel: "1482156743583727748",
+    xzhGangApplyChannel: "1474328943569010748",
   },
 
   categories: {
@@ -12,8 +24,13 @@ module.exports = {
   },
 
   roles: {
+    // Ticket
     ticketSupport: "1401958484320452780",
+
+    // Community
     xzhGang: "1458783248267087872",
+
+    // Staff Management
     leader: "1482331201242009651",
     authority: "1489926630007898184",
     operatorzz: "1489931575566139563",
