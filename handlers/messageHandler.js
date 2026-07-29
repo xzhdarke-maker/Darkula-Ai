@@ -14,6 +14,7 @@ const promotionInfo = require("../knowledge/promotionInfo");
 const faq = require("../knowledge/faq");
 
 const staffInterview = require("../interviews/staffInterview");
+const sendInterviewLog = require("../interviews/sendInterviewLog");
 
 module.exports = async (client, message) => {
   if (!message.guild) return;
