@@ -7,12 +7,13 @@ module.exports = {
 
     // Server Information
     announcement: "1401958533259464866",
-    inviteCheck: "1401958587500335319",
-    rankCheck: "1401958586396971028",
-    helpSupport: "1401958591409426473",
-    selfRole: "1431469976237379655",
     rules: "1401958531091009658",
+    verification: "1412009476801826817",
+    selfRole: "1431469976237379655",
+    rankCheck: "1401958586396971028",
+    inviteCheck: "1401958587500335319",
     inviteRewards: "1401958536287879270",
+    helpSupport: "1401958591409426473",
     staffApplyChannel: "1482156743583727748",
     xzhGangApplyChannel: "1474328943569010748",
   },
@@ -41,5 +42,10 @@ module.exports = {
   users: {
     owner: "1307666797318766606",
     girlsOwner: "1426624569782964395",
+  },
+
+  server: {
+    id: "1397974278934106182",
+    invite: "https://discord.gg/uaN7BfZppF",
   },
 };
