@@ -11,15 +11,18 @@ const questions = [
 ];
 
 const interviews = new Map();
+const completedChannels = new Set();
 
 module.exports = {
   questions,
   interviews,
+  completedChannels,
 
-  start(userId) {
+  start(userId, channelId) {
     interviews.set(userId, {
       step: 0,
-      answers: []
+      answers: [],
+      channelId
     });
 
     return questions[0];
@@ -27,17 +30,23 @@ module.exports = {
 
   next(userId, answer) {
     const data = interviews.get(userId);
+
     if (!data) return null;
 
     data.answers.push(answer);
     data.step++;
 
     if (data.step >= questions.length) {
+
+      completedChannels.add(data.channelId);
+
+      const answers = [...data.answers];
+
       interviews.delete(userId);
 
       return {
         finished: true,
-        answers: data.answers
+        answers
       };
     }
 
