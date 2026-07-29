@@ -9,6 +9,7 @@ const userInfo = require("../commands/userinfo");
 
 const serverKnowledge = require("../knowledge/serverKnowledge");
 const serverInfo = require("../knowledge/serverInfo");
+const promotionInfo = require("../knowledge/promotionInfo");
 
 module.exports = async (client, message) => {
   if (!message.guild) return;
@@ -139,6 +140,9 @@ return message.reply(reply);
   const infoHandled = await serverInfo(client, message, content);
   if (infoHandled) return;
 
+    const promotionHandled = await promotionInfo(message, content);
+if (promotionHandled) return;
+    
   const lower = content.toLowerCase();
 
   if (
