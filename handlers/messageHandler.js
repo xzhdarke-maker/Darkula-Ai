@@ -217,9 +217,32 @@ if (faqHandled) return;
   );
 
   if (result.finished) {
-    return message.reply(
-      "✅ Your Staff Interview has been completed!\n\nOur Staff Team will review your application soon."
-    );
+
+  await sendInterviewLog(
+    client,
+    message,
+    result.answers
+  );
+
+  await message.reply(
+`✅ **Your Staff Interview has been completed!**
+
+📋 **Interview Summary**
+
+👤 **Name:** ${result.answers[0]}
+🎂 **Age:** ${result.answers[1]}
+🌍 **Country:** ${result.answers[2]}
+🕒 **Timezone:** ${result.answers[3]}
+⏰ **Daily Activity:** ${result.answers[4]}
+💼 **Experience:** ${result.answers[5]}
+❤️ **Why Join:** ${result.answers[6]}
+⭐ **Why Should We Choose You:** ${result.answers[7]}
+✅ **Rules Accepted:** ${result.answers[8]}
+
+📝 Your application has been sent to the Staff Team for review.`
+  );
+
+  return;
   }
 
   return message.reply(result.question);
