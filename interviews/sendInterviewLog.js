@@ -1,4 +1,10 @@
-const { EmbedBuilder } = require("discord.js");
+const {
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require("discord.js");
+
 const config = require("../config");
 
 module.exports = async (client, message, answers) => {
@@ -12,18 +18,16 @@ module.exports = async (client, message, answers) => {
     .setColor("#5865F2")
     .setTitle("📝 New Staff Application")
     .setDescription(
-      `A new Staff Apply interview has been completed.`
+      "A new Staff Apply interview has been completed."
     )
     .addFields(
       {
         name: "👤 Applicant",
         value: `${message.author} (${message.author.tag})`,
-        inline: false,
       },
       {
         name: "🎫 Ticket",
         value: `${message.channel}`,
-        inline: false,
       },
       {
         name: "1️⃣ Name / Nickname",
@@ -68,7 +72,20 @@ module.exports = async (client, message, answers) => {
     })
     .setTimestamp();
 
+  const buttons = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId("staff_accept")
+      .setLabel("✅ Accept")
+      .setStyle(ButtonStyle.Success),
+
+    new ButtonBuilder()
+      .setCustomId("staff_reject")
+      .setLabel("❌ Reject")
+      .setStyle(ButtonStyle.Danger)
+  );
+
   await logChannel.send({
     embeds: [embed],
+    components: [buttons],
   });
 };
