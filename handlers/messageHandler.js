@@ -199,12 +199,22 @@ if (faqHandled) return;
 
   if (isStaffTicket) {
 
-  const data = staffInterview.interviews.get(message.author.id);
-
-  // Start interview
-  if (!data) {
+  if (staffInterview.completedChannels.has(message.channel.id)) {
   return;
-  }
+}
+
+const data = staffInterview.interviews.get(message.author.id);
+
+// Start interview
+if (!data) {
+
+  const firstQuestion = staffInterview.start(
+    message.author.id,
+    message.channel.id
+  );
+
+  return message.reply(firstQuestion);
+}
 
   // Continue interview
   const result = staffInterview.next(
