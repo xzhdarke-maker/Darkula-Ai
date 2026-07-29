@@ -205,9 +205,7 @@ if (faqHandled) return;
 
   // Start interview
   if (!data) {
-    const firstQuestion = staffInterview.start(message.author.id);
-
-    return message.reply(firstQuestion);
+  return;
   }
 
   // Continue interview
