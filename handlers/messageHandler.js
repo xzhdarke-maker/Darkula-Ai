@@ -217,10 +217,19 @@ if (!data) {
 }
 
   // Continue interview
-  const result = staffInterview.next(
-    message.author.id,
-    message.content
+const result = staffInterview.next(
+  message.author.id,
+  message.content
+);
+
+// Interview paused because a staff claimed it
+if (result?.paused) {
+  return message.reply(
+    `📌 This interview has been claimed by <@${result.claimedBy}>.
+
+Please wait for manual assistance.`
   );
+}
 
   if (result.finished) {
 
