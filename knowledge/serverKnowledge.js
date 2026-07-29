@@ -2,6 +2,21 @@ const config = require("../config");
 
 module.exports = async (message, content) => {
   const lower = content.toLowerCase();
+  /* ==========================
+      BOT COMMAND REDIRECT
+========================== */
+
+if (
+  lower.includes("server info") ||
+  lower.includes("serverinfo") ||
+  lower.includes("server id")
+) {
+  await message.reply(
+    `📋 Please use <#${config.channels.botCommands}> for server commands.\n\n🤖 Main Chat is reserved for AI conversations.`
+  );
+
+  return true;
+}
 
   /* ==========================
         ANNOUNCEMENT
