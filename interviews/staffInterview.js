@@ -98,4 +98,21 @@ module.exports = {
       question: questions[data.step],
     };
   },
+  findByChannel(channelId) {
+
+  for (const [userId, data] of interviews.entries()) {
+
+    if (data.channelId === channelId) {
+
+      return {
+        userId,
+        data,
+      };
+
+    }
+
+  }
+
+  return null;
+},
 };
