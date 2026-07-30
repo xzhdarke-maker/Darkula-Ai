@@ -115,6 +115,7 @@ client.on("messageCreate", async (message) => {
 
 client.on("interactionCreate", async (interaction) => {
   await applicationReview(interaction);
+  await xzhApplicationReview(interaction);
 });
 
 client.login(process.env.TOKEN);
