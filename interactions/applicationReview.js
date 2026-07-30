@@ -63,14 +63,35 @@ if (interaction.customId === "staff_claim") {
     interaction.user.id
   );
 
-  await interaction.reply({
-    content:
+  const row = new ActionRowBuilder().addComponents(
+  new ButtonBuilder()
+    .setCustomId("staff_unclaim")
+    .setLabel("🔓 Unclaim Interview")
+    .setStyle(ButtonStyle.Secondary),
+
+  new ButtonBuilder()
+    .setCustomId("staff_accept")
+    .setLabel("✅ Accept")
+    .setStyle(ButtonStyle.Success),
+
+  new ButtonBuilder()
+    .setCustomId("staff_reject")
+    .setLabel("❌ Reject")
+    .setStyle(ButtonStyle.Danger)
+);
+
+await interaction.update({
+  components: [row],
+});
+
+await interaction.followUp({
+  content:
 `📌 Interview Claimed by ${interaction.user}
 
 🤖 Darkula AI Interview has been paused.`,
-  });
+});
 
-  return;
+return;
 }
 
 if (interaction.customId === "staff_unclaim") {
