@@ -6,6 +6,7 @@ const {
 } = require("discord.js");
 
 const config = require("../config");
+const staffInterview = require("../interviews/staffInterview");
 
 module.exports = async (interaction) => {
   if (!interaction.isButton()) return;
