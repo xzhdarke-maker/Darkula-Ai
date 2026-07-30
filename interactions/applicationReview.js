@@ -44,6 +44,25 @@ const hasPermission =
       ephemeral: true,
     });
   }
+if (interaction.customId === "staff_claim") {
+
+  await interaction.reply({
+    content:
+      `📌 Interview Claimed by ${interaction.user}.\n\n🤖 Darkula AI Interview has been paused.`,
+  });
+
+  return;
+}
+
+if (interaction.customId === "staff_unclaim") {
+
+  await interaction.reply({
+    content:
+      `🔓 Interview Resumed by ${interaction.user}.\n\n🤖 Darkula AI Interview has been resumed.`,
+  });
+
+  return;
+}
 
   const accepted = interaction.customId === "staff_accept";
 
