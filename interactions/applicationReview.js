@@ -21,20 +21,22 @@ module.exports = async (interaction) => {
 
   const member = interaction.member;
 
-  const allowedRoles = [
-    config.roles.ticketSupport,
-    config.roles.leader,
-    config.roles.authority,
-    config.roles.operatorzz,
-    config.roles.feelThePower,
-    config.roles.coOwner,
-  ];
+const allowedRoles = [
+  config.roles.ticketSupport,
+  config.roles.leader,
+  config.roles.authority,
+  config.roles.operatorzz,
+  config.roles.feelThePower,
+  config.roles.coOwner,
+];
 
-  const hasPermission =
-    member.permissions.has(PermissionFlagsBits.Administrator) ||
-    member.roles.cache.some(role =>
-      allowedRoles.includes(role.id)
-    );
+const hasPermission =
+  member.permissions.has(PermissionFlagsBits.Administrator) ||
+  member.id === config.users.owner ||
+  member.id === config.users.girlsOwner ||
+  member.roles.cache.some(role =>
+    allowedRoles.includes(role.id)
+  );
 
   if (!hasPermission) {
     return interaction.reply({
