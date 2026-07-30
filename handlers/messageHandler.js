@@ -214,6 +214,8 @@ if (!data) {
     message.channel.id
   );
 
+  await interviewClaim(message);
+
   return message.reply(firstQuestion);
 }
 
