@@ -45,6 +45,30 @@ const hasPermission =
       ephemeral: true,
     });
   }
+  const interview = staffInterview.findByChannel(
+  interaction.channel.id
+);
+
+if (interview && interview.data.claimedBy) {
+
+  const isOwner =
+    interaction.user.id === config.users.owner;
+
+  const isGirlsOwner =
+    interaction.user.id === config.users.girlsOwner;
+
+  if (
+    interview.data.claimedBy !== interaction.user.id &&
+    !isOwner &&
+    !isGirlsOwner
+  ) {
+    return interaction.reply({
+      content:
+        `❌ This interview has been claimed by <@${interview.data.claimedBy}>.\nOnly the claimed staff member can review it.`,
+      ephemeral: true,
+    });
+  }
+}
 if (interaction.customId === "staff_claim") {
 
   const interview = staffInterview.findByChannel(
