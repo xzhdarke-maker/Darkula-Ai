@@ -11,11 +11,13 @@ module.exports = async (interaction) => {
   if (!interaction.isButton()) return;
 
   if (
-    interaction.customId !== "staff_accept" &&
-    interaction.customId !== "staff_reject"
-  ) {
-    return;
-  }
+  interaction.customId !== "staff_claim" &&
+  interaction.customId !== "staff_unclaim" &&
+  interaction.customId !== "staff_accept" &&
+  interaction.customId !== "staff_reject"
+) {
+  return;
+}
 
   const member = interaction.member;
 
