@@ -32,9 +32,14 @@ module.exports = async (client, message, answers) => {
         inline: true,
       },
       {
-        name: "👤 Applicant",
-        value: `${message.author} (${message.author.tag})`,
-      },
+  name: "👤 Applicant",
+  value: `${message.author} (${message.author.tag})`,
+},
+{
+  name: "🆔 Applicant ID",
+  value: message.author.id,
+  inline: false,
+},
       {
         name: "🎫 Ticket",
         value: `${message.channel}`,
