@@ -22,6 +22,16 @@ module.exports = async (client, message, answers) => {
     )
     .addFields(
       {
+        name: "📊 Status",
+        value: "🟡 Pending Review",
+        inline: true,
+      },
+      {
+        name: "👮 Claimed By",
+        value: "Not Claimed",
+        inline: true,
+      },
+      {
         name: "👤 Applicant",
         value: `${message.author} (${message.author.tag})`,
       },
@@ -72,7 +82,12 @@ module.exports = async (client, message, answers) => {
     })
     .setTimestamp();
 
-  const buttons = new ActionRowBuilder().addComponents(
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId("staff_claim")
+      .setLabel("📌 Claim Interview")
+      .setStyle(ButtonStyle.Primary),
+
     new ButtonBuilder()
       .setCustomId("staff_accept")
       .setLabel("✅ Accept")
@@ -83,9 +98,10 @@ module.exports = async (client, message, answers) => {
       .setLabel("❌ Reject")
       .setStyle(ButtonStyle.Danger)
   );
-
-  await logChannel.send({
+    const logMessage = await logChannel.send({
     embeds: [embed],
-    components: [buttons],
+    components: [row],
   });
+
+  return logMessage;
 };
