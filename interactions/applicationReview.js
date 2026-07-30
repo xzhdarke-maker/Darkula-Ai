@@ -75,9 +75,24 @@ if (interaction.customId === "staff_claim") {
 
 if (interaction.customId === "staff_unclaim") {
 
+  const interview = staffInterview.findByChannel(
+    interaction.channel.id
+  );
+
+  if (!interview) {
+    return interaction.reply({
+      content: "❌ No active interview found.",
+      ephemeral: true,
+    });
+  }
+
+  staffInterview.resume(interview.userId);
+
   await interaction.reply({
     content:
-      `🔓 Interview Resumed by ${interaction.user}.\n\n🤖 Darkula AI Interview has been resumed.`,
+`🔓 Interview Resumed by ${interaction.user}
+
+🤖 Darkula AI Interview has been resumed.`,
   });
 
   return;
