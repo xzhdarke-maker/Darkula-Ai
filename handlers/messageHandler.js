@@ -269,8 +269,66 @@ Please wait for manual assistance.`
   }
 
   if (isXzhTicket) {
-    // xzhGang Apply Interview
+
+  if (xzhInterview.completedChannels.has(message.channel.id)) {
     return;
+  }
+
+  const data = xzhInterview.interviews.get(message.author.id);
+
+  if (!data) {
+
+    const firstQuestion = xzhInterview.start(
+      message.author.id,
+      message.channel.id
+    );
+
+    return message.reply(firstQuestion);
+  }
+
+  const result = xzhInterview.next(
+    message.author.id,
+    message.content
+  );
+
+  if (result?.paused) {
+    return message.reply(
+      `👑 This xzhGang application has been claimed by <@${result.claimedBy}>.
+
+Please wait until your reviewer continues the application.`
+    );
+  }
+
+  if (result.finished) {
+
+    await sendXzhInterviewLog(
+      client,
+      message,
+      result.answers
+    );
+
+    await message.reply(
+`✅ Your xzhGang Application has been completed!
+
+📸 Before your application can be reviewed, please complete the following:
+
+👑 Change your Discord Display Name:
+Example: xzhDarkula ✓
+
+🔗 Add this invite to your Discord Bio:
+https://discord.gg/zmxx5N628w
+
+📷 Send these screenshots in this ticket:
+• Main Profile (Display Name)
+• Discord Bio
+
+⚠️ Your application will only be reviewed after both screenshots have been submitted.`
+    );
+
+    return;
+  }
+
+  return message.reply(result.question);
   }
 
 };
