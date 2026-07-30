@@ -47,9 +47,27 @@ const hasPermission =
   }
 if (interaction.customId === "staff_claim") {
 
+  const interview = staffInterview.findByChannel(
+    interaction.channel.id
+  );
+
+  if (!interview) {
+    return interaction.reply({
+      content: "❌ No active interview found.",
+      ephemeral: true,
+    });
+  }
+
+  staffInterview.pause(
+    interview.userId,
+    interaction.user.id
+  );
+
   await interaction.reply({
     content:
-      `📌 Interview Claimed by ${interaction.user}.\n\n🤖 Darkula AI Interview has been paused.`,
+`📌 Interview Claimed by ${interaction.user}
+
+🤖 Darkula AI Interview has been paused.`,
   });
 
   return;
