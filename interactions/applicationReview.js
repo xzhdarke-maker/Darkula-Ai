@@ -52,10 +52,10 @@ if (interaction.customId === "staff_claim") {
   );
 
   if (!interview) {
-    return interaction.reply({
-      content: "❌ No active interview found.",
-      ephemeral: true,
-    });
+  return interaction.reply({
+    content: "❌ No active interview found.",
+    ephemeral: true,
+  });
   }
 
   staffInterview.pause(
