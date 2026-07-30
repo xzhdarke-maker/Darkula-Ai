@@ -87,26 +87,9 @@ module.exports = async (client, message, answers) => {
     })
     .setTimestamp();
 
-  const row = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-      .setCustomId("staff_claim")
-      .setLabel("📌 Claim Interview")
-      .setStyle(ButtonStyle.Primary),
-
-    new ButtonBuilder()
-      .setCustomId("staff_accept")
-      .setLabel("✅ Accept")
-      .setStyle(ButtonStyle.Success),
-
-    new ButtonBuilder()
-      .setCustomId("staff_reject")
-      .setLabel("❌ Reject")
-      .setStyle(ButtonStyle.Danger)
-  );
-    const logMessage = await logChannel.send({
-    embeds: [embed],
-    components: [row],
-  });
+  const logMessage = await logChannel.send({
+  embeds: [embed],
+});
 
   return logMessage;
 };
