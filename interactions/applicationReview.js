@@ -9,6 +9,9 @@ const config = require("../config");
 const staffInterview = require("../interviews/staffInterview");
 
 module.exports = async (interaction) => {
+
+  const client = interaction.client;
+
   if (!interaction.isButton()) return;
 
   if (
@@ -35,7 +38,7 @@ module.exports = async (interaction) => {
     member.permissions.has(PermissionFlagsBits.Administrator) ||
     member.id === config.users.owner ||
     member.id === config.users.girlsOwner ||
-    member.roles.cache.some((role) =>
+    member.roles.cache.some(role =>
       allowedRoles.includes(role.id)
     );
 
@@ -51,35 +54,38 @@ module.exports = async (interaction) => {
     interaction.channel.id
   );
 
-  if (interview && interview.data.claimedBy) {
-    const isOwner = interaction.user.id === config.users.owner;
-    const isGirlsOwner =
-      interaction.user.id === config.users.girlsOwner;
-
-    if (
-      interview.data.claimedBy !== interaction.user.id &&
-      !isOwner &&
-      !isGirlsOwner
-    ) {
-      return interaction.reply({
-        content:
-          `❌ This interview has been claimed by <@${interview.data.claimedBy}>.\nOnly the claimed staff member can review it.`,
-        ephemeral: true,
-      });
-    }
+  if (!interview) {
+    return interaction.reply({
+      content: "❌ No active interview found.",
+      ephemeral: true,
+    });
   }
-    /* ==========================
+
+  const isOwner =
+    interaction.user.id === config.users.owner;
+
+  const isGirlsOwner =
+    interaction.user.id === config.users.girlsOwner;
+
+  if (
+    interview.data.claimedBy &&
+    interview.data.claimedBy !== interaction.user.id &&
+    !isOwner &&
+    !isGirlsOwner
+  ) {
+    return interaction.reply({
+      content:
+`❌ This interview has already been claimed by <@${interview.data.claimedBy}>.
+
+Only the claimed staff member can review it.`,
+      ephemeral: true,
+    });
+  }
+
+  /* ==========================
          CLAIM INTERVIEW
   ========================== */
-
-  if (interaction.customId === "staff_claim") {
-
-    if (!interview) {
-      return interaction.reply({
-        content: "❌ No active interview found.",
-        ephemeral: true,
-      });
-    }
+    if (interaction.customId === "staff_claim") {
 
     staffInterview.pause(
       interview.userId,
@@ -87,6 +93,7 @@ module.exports = async (interaction) => {
     );
 
     const row = new ActionRowBuilder().addComponents(
+
       new ButtonBuilder()
         .setCustomId("staff_unclaim")
         .setLabel("🔓 Unclaim Interview")
@@ -101,6 +108,7 @@ module.exports = async (interaction) => {
         .setCustomId("staff_reject")
         .setLabel("❌ Reject")
         .setStyle(ButtonStyle.Danger)
+
     );
 
     await interaction.update({
@@ -125,16 +133,10 @@ module.exports = async (interaction) => {
 
   if (interaction.customId === "staff_unclaim") {
 
-    if (!interview) {
-      return interaction.reply({
-        content: "❌ No active interview found.",
-        ephemeral: true,
-      });
-    }
-
     staffInterview.resume(interview.userId);
 
     const row = new ActionRowBuilder().addComponents(
+
       new ButtonBuilder()
         .setCustomId("staff_claim")
         .setLabel("📌 Claim Interview")
@@ -149,6 +151,7 @@ module.exports = async (interaction) => {
         .setCustomId("staff_reject")
         .setLabel("❌ Reject")
         .setStyle(ButtonStyle.Danger)
+
     );
 
     await interaction.update({
@@ -166,7 +169,8 @@ module.exports = async (interaction) => {
 
     return;
   }
-    /* ==========================
+
+  /* ==========================
           ACCEPT / REJECT
   ========================== */
 
@@ -175,8 +179,7 @@ module.exports = async (interaction) => {
 
   const applicant =
     await client.users.fetch(interview.userId).catch(() => null);
-
-  const row = new ActionRowBuilder().addComponents(
+    const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
       .setCustomId("review_done")
       .setLabel(
@@ -197,13 +200,10 @@ module.exports = async (interaction) => {
   });
 
   if (applicant) {
-
     try {
-
       await applicant.send({
-        content:
-accepted
-? `🎉 Congratulations!
+        content: accepted
+          ? `🎉 Congratulations!
 
 Your **Staff Application** has been **Accepted** in **Dark Community**.
 
@@ -211,54 +211,43 @@ A staff member will contact you shortly.
 
 Server:
 ${config.server.invite}`
-: `Hello!
+          : `Hello!
 
 Unfortunately your **Staff Application** has been **Rejected** this time.
 
 You can always apply again in the future.
 
 Server:
-${config.server.invite}`
+${config.server.invite}`,
       });
-
     } catch {}
-
   }
 
   await interaction.followUp({
-    content:
-accepted
-? `✅ ${interaction.user} accepted this Staff Application.`
-: `❌ ${interaction.user} rejected this Staff Application.`,
+    content: accepted
+      ? `✅ ${interaction.user} accepted this Staff Application.`
+      : `❌ ${interaction.user} rejected this Staff Application.`,
   });
-    /* ==========================
-      UPDATE INTERVIEW LOG
-  ========================== */
 
   try {
 
-    const logChannel =
-      client.channels.cache.get(
-        config.channels.interviewLogs
-      );
+    const logChannel = client.channels.cache.get(
+      config.channels.interviewLogs
+    );
 
     if (logChannel) {
 
-      const messages =
-        await logChannel.messages.fetch({
-          limit: 20,
-        });
+      const messages = await logChannel.messages.fetch({
+        limit: 20,
+      });
 
-      const logMessage =
-        messages.find(
-          (m) =>
-            m.embeds.length &&
-            m.embeds[0].footer &&
-            m.embeds[0].footer.text &&
-            m.embeds[0].footer.text.includes(
-              interview.userId
-            )
-        );
+      const logMessage = messages.find(
+        (m) =>
+          m.embeds.length &&
+          m.embeds[0].footer &&
+          m.embeds[0].footer.text &&
+          m.embeds[0].footer.text.includes(interview.userId)
+      );
 
       if (logMessage) {
 
