@@ -12,159 +12,169 @@ module.exports = async (interaction) => {
   if (!interaction.isButton()) return;
 
   if (
-  interaction.customId !== "staff_claim" &&
-  interaction.customId !== "staff_unclaim" &&
-  interaction.customId !== "staff_accept" &&
-  interaction.customId !== "staff_reject"
-) {
-  return;
-}
+    interaction.customId !== "staff_claim" &&
+    interaction.customId !== "staff_unclaim" &&
+    interaction.customId !== "staff_accept" &&
+    interaction.customId !== "staff_reject"
+  ) {
+    return;
+  }
 
   const member = interaction.member;
 
-const allowedRoles = [
-  config.roles.ticketSupport,
-  config.roles.leader,
-  config.roles.authority,
-  config.roles.operatorzz,
-  config.roles.feelThePower,
-  config.roles.coOwner,
-];
+  const allowedRoles = [
+    config.roles.ticketSupport,
+    config.roles.leader,
+    config.roles.authority,
+    config.roles.operatorzz,
+    config.roles.feelThePower,
+    config.roles.coOwner,
+  ];
 
-const hasPermission =
-  member.permissions.has(PermissionFlagsBits.Administrator) ||
-  member.id === config.users.owner ||
-  member.id === config.users.girlsOwner ||
-  member.roles.cache.some(role =>
-    allowedRoles.includes(role.id)
-  );
+  const hasPermission =
+    member.permissions.has(PermissionFlagsBits.Administrator) ||
+    member.id === config.users.owner ||
+    member.id === config.users.girlsOwner ||
+    member.roles.cache.some((role) =>
+      allowedRoles.includes(role.id)
+    );
 
   if (!hasPermission) {
     return interaction.reply({
-      content: "❌ You don't have permission to review Staff Applications.",
-      ephemeral: true,
-    });
-  }
-  const interview = staffInterview.findByChannel(
-  interaction.channel.id
-);
-
-if (interview && interview.data.claimedBy) {
-
-  const isOwner =
-    interaction.user.id === config.users.owner;
-
-  const isGirlsOwner =
-    interaction.user.id === config.users.girlsOwner;
-
-  if (
-    interview.data.claimedBy !== interaction.user.id &&
-    !isOwner &&
-    !isGirlsOwner
-  ) {
-    return interaction.reply({
       content:
-        `❌ This interview has been claimed by <@${interview.data.claimedBy}>.\nOnly the claimed staff member can review it.`,
+        "❌ You don't have permission to review Staff Applications.",
       ephemeral: true,
     });
   }
-}
-if (interaction.customId === "staff_claim") {
 
   const interview = staffInterview.findByChannel(
     interaction.channel.id
   );
 
-  if (!interview) {
-  return interaction.reply({
-    content: "❌ No active interview found.",
-    ephemeral: true,
-  });
+  if (interview && interview.data.claimedBy) {
+    const isOwner = interaction.user.id === config.users.owner;
+    const isGirlsOwner =
+      interaction.user.id === config.users.girlsOwner;
+
+    if (
+      interview.data.claimedBy !== interaction.user.id &&
+      !isOwner &&
+      !isGirlsOwner
+    ) {
+      return interaction.reply({
+        content:
+          `❌ This interview has been claimed by <@${interview.data.claimedBy}>.\nOnly the claimed staff member can review it.`,
+        ephemeral: true,
+      });
+    }
   }
+    /* ==========================
+         CLAIM INTERVIEW
+  ========================== */
 
-  staffInterview.pause(
-    interview.userId,
-    interaction.user.id
-  );
+  if (interaction.customId === "staff_claim") {
 
-  const row = new ActionRowBuilder().addComponents(
-  new ButtonBuilder()
-    .setCustomId("staff_unclaim")
-    .setLabel("🔓 Unclaim Interview")
-    .setStyle(ButtonStyle.Secondary),
+    if (!interview) {
+      return interaction.reply({
+        content: "❌ No active interview found.",
+        ephemeral: true,
+      });
+    }
 
-  new ButtonBuilder()
-    .setCustomId("staff_accept")
-    .setLabel("✅ Accept")
-    .setStyle(ButtonStyle.Success),
+    staffInterview.pause(
+      interview.userId,
+      interaction.user.id
+    );
 
-  new ButtonBuilder()
-    .setCustomId("staff_reject")
-    .setLabel("❌ Reject")
-    .setStyle(ButtonStyle.Danger)
-);
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("staff_unclaim")
+        .setLabel("🔓 Unclaim Interview")
+        .setStyle(ButtonStyle.Secondary),
 
-await interaction.update({
-  components: [row],
-});
+      new ButtonBuilder()
+        .setCustomId("staff_accept")
+        .setLabel("✅ Accept")
+        .setStyle(ButtonStyle.Success),
 
-await interaction.followUp({
-  content:
-`📌 Interview Claimed by ${interaction.user}
+      new ButtonBuilder()
+        .setCustomId("staff_reject")
+        .setLabel("❌ Reject")
+        .setStyle(ButtonStyle.Danger)
+    );
+
+    await interaction.update({
+      components: [row],
+    });
+
+    await interaction.followUp({
+      content:
+`📌 **Interview Claimed**
+
+👮 Claimed By: ${interaction.user}
 
 🤖 Darkula AI Interview has been paused.`,
-});
-
-return;
-}
-
-if (interaction.customId === "staff_unclaim") {
-
-  const interview = staffInterview.findByChannel(
-    interaction.channel.id
-  );
-
-  if (!interview) {
-    return interaction.reply({
-      content: "❌ No active interview found.",
-      ephemeral: true,
     });
+
+    return;
   }
 
-  staffInterview.resume(interview.userId);
+  /* ==========================
+        UNCLAIM INTERVIEW
+  ========================== */
 
-  const row = new ActionRowBuilder().addComponents(
-  new ButtonBuilder()
-    .setCustomId("staff_claim")
-    .setLabel("📌 Claim Interview")
-    .setStyle(ButtonStyle.Primary),
+  if (interaction.customId === "staff_unclaim") {
 
-  new ButtonBuilder()
-    .setCustomId("staff_accept")
-    .setLabel("✅ Accept")
-    .setStyle(ButtonStyle.Success),
+    if (!interview) {
+      return interaction.reply({
+        content: "❌ No active interview found.",
+        ephemeral: true,
+      });
+    }
 
-  new ButtonBuilder()
-    .setCustomId("staff_reject")
-    .setLabel("❌ Reject")
-    .setStyle(ButtonStyle.Danger)
-);
+    staffInterview.resume(interview.userId);
 
-await interaction.update({
-  components: [row],
-});
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("staff_claim")
+        .setLabel("📌 Claim Interview")
+        .setStyle(ButtonStyle.Primary),
 
-await interaction.followUp({
-  content:
-`🔓 Interview Resumed by ${interaction.user}
+      new ButtonBuilder()
+        .setCustomId("staff_accept")
+        .setLabel("✅ Accept")
+        .setStyle(ButtonStyle.Success),
+
+      new ButtonBuilder()
+        .setCustomId("staff_reject")
+        .setLabel("❌ Reject")
+        .setStyle(ButtonStyle.Danger)
+    );
+
+    await interaction.update({
+      components: [row],
+    });
+
+    await interaction.followUp({
+      content:
+`🔓 **Interview Resumed**
+
+👮 Resumed By: ${interaction.user}
 
 🤖 Darkula AI Interview has been resumed.`,
-});
+    });
 
-return;
-}
+    return;
+  }
+    /* ==========================
+          ACCEPT / REJECT
+  ========================== */
 
-  const accepted = interaction.customId === "staff_accept";
+  const accepted =
+    interaction.customId === "staff_accept";
+
+  const applicant =
+    await client.users.fetch(interview.userId).catch(() => null);
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -186,9 +196,105 @@ return;
     components: [row],
   });
 
+  if (applicant) {
+
+    try {
+
+      await applicant.send({
+        content:
+accepted
+? `🎉 Congratulations!
+
+Your **Staff Application** has been **Accepted** in **Dark Community**.
+
+A staff member will contact you shortly.
+
+Server:
+${config.server.invite}`
+: `Hello!
+
+Unfortunately your **Staff Application** has been **Rejected** this time.
+
+You can always apply again in the future.
+
+Server:
+${config.server.invite}`
+      });
+
+    } catch {}
+
+  }
+
   await interaction.followUp({
-    content: accepted
-      ? `✅ Application approved by ${interaction.user}.`
-      : `❌ Application rejected by ${interaction.user}.`,
+    content:
+accepted
+? `✅ ${interaction.user} accepted this Staff Application.`
+: `❌ ${interaction.user} rejected this Staff Application.`,
   });
+    /* ==========================
+      UPDATE INTERVIEW LOG
+  ========================== */
+
+  try {
+
+    const logChannel =
+      client.channels.cache.get(
+        config.channels.interviewLogs
+      );
+
+    if (logChannel) {
+
+      const messages =
+        await logChannel.messages.fetch({
+          limit: 20,
+        });
+
+      const logMessage =
+        messages.find(
+          (m) =>
+            m.embeds.length &&
+            m.embeds[0].footer &&
+            m.embeds[0].footer.text &&
+            m.embeds[0].footer.text.includes(
+              interview.userId
+            )
+        );
+
+      if (logMessage) {
+
+        const embed = logMessage.embeds[0];
+
+        const fields = [...embed.fields];
+
+        fields.push({
+          name: "📋 Status",
+          value: accepted
+            ? "🟢 Accepted"
+            : "🔴 Rejected",
+          inline: true,
+        });
+
+        fields.push({
+          name: "👮 Reviewed By",
+          value: `${interaction.user}`,
+          inline: true,
+        });
+
+        await logMessage.edit({
+          embeds: [
+            {
+              ...embed.data,
+              fields,
+            },
+          ],
+        });
+
+      }
+
+    }
+
+  } catch (err) {
+    console.error(err);
+  }
+
 };
