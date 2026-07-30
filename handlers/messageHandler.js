@@ -16,6 +16,8 @@ const faq = require("../knowledge/faq");
 const staffInterview = require("../interviews/staffInterview");
 const sendInterviewLog = require("../interviews/sendInterviewLog");
 const interviewClaim = require("../interviews/interviewClaim");
+const xzhInterview = require("../interviews/xzhInterview");
+const sendXzhInterviewLog = require("../interviews/sendXzhInterviewLog");
 
 module.exports = async (client, message) => {
   if (!message.guild) return;
