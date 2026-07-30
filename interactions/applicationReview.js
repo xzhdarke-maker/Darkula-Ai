@@ -285,5 +285,6 @@ ${config.server.invite}`,
   } catch (err) {
     console.error(err);
   }
+  staffInterview.remove(interview.userId);
 
 };
