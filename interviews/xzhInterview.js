@@ -126,4 +126,8 @@ module.exports = {
 
     return null;
   },
+
+  remove(userId) {
+    interviews.delete(userId);
+  },
 };
