@@ -369,9 +369,7 @@ https://discord.gg/zmxx5N628w
     return;
   }
 
-    return message.reply(result.question);
+        return message.reply(result.question);
   }
-
-}
 
 };
