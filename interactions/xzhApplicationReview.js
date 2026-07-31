@@ -193,9 +193,14 @@ module.exports = async (interaction) => {
 Your xzhGang Application has been Accepted.
 
 Welcome to xzhGang!`
-          : `❌ Your xzhGang Application has been Rejected.
+          : `👋 Hello!
 
-You may apply again in the future.`
+Unfortunately your **xzhGang Application** has been **Rejected** this time. ❌
+
+Don't worry—you can improve and apply again in the future.
+
+Server:
+https://discord.gg/zmxx5N628w`
       });
 
     } catch (err) {
