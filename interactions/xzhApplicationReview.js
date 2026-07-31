@@ -53,15 +53,19 @@ module.exports = async (interaction) => {
     });
   }
 
-  const interview =
-    xzhInterview.findByChannel(interaction.channel.id);
+  console.log("CHANNEL:", interaction.channel.id);
 
-  if (!interview) {
-    return interaction.reply({
-      content: "❌ No active xzhGang application found.",
-      ephemeral: true,
-    });
-  }
+const interview =
+  xzhInterview.findByChannel(interaction.channel.id);
+
+console.log("INTERVIEW:", interview);
+
+if (!interview) {
+  return interaction.reply({
+    content: "❌ No active xzhGang application found.",
+    ephemeral: true,
+  });
+}
 
   const isOwner =
     interaction.user.id === config.users.owner;
