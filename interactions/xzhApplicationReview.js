@@ -228,8 +228,6 @@ https://discord.gg/zmxx5N628w`
       : `❌ ${interaction.user} rejected this application.`,
   });
 
-  xzhInterview.interviews.delete(interview.userId);
-
   // ===== PART 2 END =====
     /* ==========================
       UPDATE INTERVIEW LOG
