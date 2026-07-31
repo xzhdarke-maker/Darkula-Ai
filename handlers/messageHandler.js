@@ -288,19 +288,13 @@ Please wait for manual assistance.`
 
   if (isXzhTicket) {
 
-  const interview = xzhInterview.findByChannel(message.channel.id);
-
-if (
-    xzhInterview.completedChannels.has(message.channel.id) &&
-    !interview
-) {
+  if (xzhInterview.completedChannels.has(message.channel.id)) {
     return;
-}
+  }
 
-  const data =
-    xzhInterview.interviews.get(message.author.id) ||
-    xzhInterview.findByChannel(message.channel.id)?.data;
+  const data = xzhInterview.interviews.get(message.author.id);
 
+  // Start application
   if (!data) {
 
     const firstQuestion = xzhInterview.start(
@@ -313,43 +307,44 @@ if (
     return message.reply(firstQuestion);
   }
 
+  // Continue application
   const result = xzhInterview.next(
     message.author.id,
     message.content
   );
 
+  // Application paused because claimed
   if (result?.paused) {
-  return;
-}
+    return;
+  }
 
   if (result.finished) {
 
-  await sendXzhInterviewLog(
-    client,
-    message,
-    result.answers
-  );
+    await sendXzhInterviewLog(
+      client,
+      message,
+      result.answers
+    );
 
-  const row = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-      .setCustomId("xzh_claim")
-      .setLabel("📌 Claim")
-      .setStyle(ButtonStyle.Primary),
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("xzh_claim")
+        .setLabel("📌 Claim")
+        .setStyle(ButtonStyle.Primary),
 
-    new ButtonBuilder()
-      .setCustomId("xzh_accept")
-      .setLabel("✅ Accept")
-      .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId("xzh_accept")
+        .setLabel("✅ Accept")
+        .setStyle(ButtonStyle.Success),
 
-    new ButtonBuilder()
-      .setCustomId("xzh_reject")
-      .setLabel("❌ Reject")
-      .setStyle(ButtonStyle.Danger)
-  );
+      new ButtonBuilder()
+        .setCustomId("xzh_reject")
+        .setLabel("❌ Reject")
+        .setStyle(ButtonStyle.Danger)
+    );
 
-  await message.reply({
-    content:
-`✅ Your xzhGang Application has been completed!
+    await message.reply({
+      content: `✅ Your xzhGang Application has been completed!
 
 📸 Before your application can be reviewed, please complete the following:
 
@@ -368,13 +363,11 @@ https://discord.gg/zmxx5N628w
 ━━━━━━━━━━━━━━━━━━━━━━
 
 👮 Staff Review Panel`,
-    components: [row],
-  });
+      components: [row],
+    });
 
-  return;
-}
-
-return message.reply(result.question);
+    return;
   }
 
-};
+  return message.reply(result.question);
+  }
