@@ -319,12 +319,8 @@ if (
   );
 
   if (result?.paused) {
-    return message.reply(
-      `👑 This xzhGang application has been claimed by <@${result.claimedBy}>.
-
-Please wait until your reviewer continues the application.`
-    );
-  }
+  return;
+}
 
   if (result.finished) {
 
