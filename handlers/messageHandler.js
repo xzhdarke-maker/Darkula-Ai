@@ -296,7 +296,9 @@ if (
     return;
 }
 
-  const data = xzhInterview.interviews.get(message.author.id);
+  const data =
+    xzhInterview.interviews.get(message.author.id) ||
+    xzhInterview.findByChannel(message.channel.id)?.data;
 
   if (!data) {
 
