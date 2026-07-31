@@ -90,11 +90,11 @@ module.exports = {
 
   completedChannels.add(data.channelId);
 
-  const answers = [...data.answers];
+  data.finished = true;
 
   return {
     finished: true,
-    answers,
+    answers: [...data.answers],
   };
     }
 
