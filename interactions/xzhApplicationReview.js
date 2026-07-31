@@ -9,6 +9,7 @@ const config = require("../config");
 const xzhInterview = require("../interviews/xzhInterview");
 
 module.exports = async (interaction) => {
+
   if (!interaction.isButton()) return;
 
   if (
@@ -35,54 +36,50 @@ module.exports = async (interaction) => {
     member.permissions.has(PermissionFlagsBits.Administrator) ||
     member.id === config.users.owner ||
     member.id === config.users.girlsOwner ||
-    member.roles.cache.some((role) =>
+    member.roles.cache.some(role =>
       allowedRoles.includes(role.id)
     );
 
   if (!hasPermission) {
     return interaction.reply({
-      content:
-        "❌ You don't have permission to review xzhGang Applications.",
+      content: "❌ You don't have permission to review xzhGang Applications.",
       ephemeral: true,
     });
   }
 
-  const interview = xzhInterview.findByChannel(
-    interaction.channel.id
-  );
+  const interview =
+    xzhInterview.findByChannel(interaction.channel.id);
 
-  if (interview && interview.data.claimedBy) {
-    const isOwner =
-      interaction.user.id === config.users.owner;
+  if (!interview) {
+    return interaction.reply({
+      content: "❌ No active xzhGang application found.",
+      ephemeral: true,
+    });
+  }
 
-    const isGirlsOwner =
-      interaction.user.id === config.users.girlsOwner;
+  const isOwner =
+    interaction.user.id === config.users.owner;
 
-    if (
-      interview.data.claimedBy !== interaction.user.id &&
-      !isOwner &&
-      !isGirlsOwner
-    ) {
-      return interaction.reply({
-        content:
-          `❌ This xzhGang application has been claimed by <@${interview.data.claimedBy}>.`,
-        ephemeral: true,
-      });
-    }
+  const isGirlsOwner =
+    interaction.user.id === config.users.girlsOwner;
+
+  if (
+    interview.data.claimedBy &&
+    interview.data.claimedBy !== interaction.user.id &&
+    !isOwner &&
+    !isGirlsOwner
+  ) {
+    return interaction.reply({
+      content: `❌ This application has already been claimed by <@${interview.data.claimedBy}>.`,
+      ephemeral: true,
+    });
   }
 
   /* ==========================
-          CLAIM
+            CLAIM
   ========================== */
 
   if (interaction.customId === "xzh_claim") {
-
-    if (!interview) {
-      return interaction.reply({
-        content: "❌ No active xzhGang interview found.",
-        ephemeral: true,
-      });
-    }
 
     xzhInterview.pause(
       interview.userId,
@@ -111,28 +108,18 @@ module.exports = async (interaction) => {
     });
 
     await interaction.followUp({
-      content:
-`👑 xzhGang Application Claimed
-
-Reviewer: ${interaction.user}
-
-The application has been paused until review is complete.`,
+      content: `👑 Application claimed by ${interaction.user}.`,
     });
 
     return;
-      }
+  }
+
+  // ===== PART 1 END =====
     /* ==========================
-          UNCLAIM
+           UNCLAIM
   ========================== */
 
   if (interaction.customId === "xzh_unclaim") {
-
-    if (!interview) {
-      return interaction.reply({
-        content: "❌ No active xzhGang interview found.",
-        ephemeral: true,
-      });
-    }
 
     xzhInterview.resume(interview.userId);
 
@@ -158,27 +145,22 @@ The application has been paused until review is complete.`,
     });
 
     await interaction.followUp({
-      content:
-`🔓 xzhGang Application Unclaimed
-
-Reviewer: ${interaction.user}
-
-The application has been resumed and is now available for other reviewers.`,
+      content: `🔓 Application unclaimed by ${interaction.user}.`,
     });
 
     return;
   }
-    /* ==========================
-        ACCEPT / REJECT
+
+  /* ==========================
+       ACCEPT / REJECT
   ========================== */
 
   const accepted =
     interaction.customId === "xzh_accept";
 
-  const applicant =
-    await interaction.client.users
-      .fetch(interview.userId)
-      .catch(() => null);
+  const applicant = await interaction.client.users
+    .fetch(interview.userId)
+    .catch(() => null);
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -208,27 +190,27 @@ The application has been resumed and is now available for other reviewers.`,
         content: accepted
           ? `👑 Congratulations!
 
-Your **xzhGang Application** has been **Accepted**.
+Your xzhGang Application has been Accepted.
 
-Welcome to **xzhGang**!
-
-A reviewer will contact you shortly.`
-          : `Hello!
-
-Unfortunately your **xzhGang Application** has been **Rejected**.
+Welcome to xzhGang!`
+          : `❌ Your xzhGang Application has been Rejected.
 
 You may apply again in the future.`
       });
 
-    } catch {}
+    } catch (err) {
+      console.log("Could not DM applicant.");
+    }
 
   }
 
   await interaction.followUp({
     content: accepted
-      ? `👑 ${interaction.user} accepted this xzhGang application.`
-      : `❌ ${interaction.user} rejected this xzhGang application.`,
+      ? `👑 ${interaction.user} accepted this application.`
+      : `❌ ${interaction.user} rejected this application.`,
   });
+
+  // ===== PART 2 END =====
     /* ==========================
       UPDATE INTERVIEW LOG
   ========================== */
@@ -242,21 +224,17 @@ You may apply again in the future.`
 
     if (logChannel) {
 
-      const messages =
-        await logChannel.messages.fetch({
-          limit: 20,
-        });
+      const messages = await logChannel.messages.fetch({
+        limit: 20,
+      });
 
-      const logMessage =
-        messages.find(
-          (m) =>
-            m.embeds.length &&
-            m.embeds[0].footer &&
-            m.embeds[0].footer.text &&
-            m.embeds[0].footer.text.includes(
-              interview.userId
-            )
-        );
+      const logMessage = messages.find(
+        (m) =>
+          m.embeds.length &&
+          m.embeds[0].footer &&
+          m.embeds[0].footer.text &&
+          m.embeds[0].footer.text.includes(interview.userId)
+      );
 
       if (logMessage) {
 
@@ -285,16 +263,18 @@ You may apply again in the future.`
               fields,
             },
           ],
-        );
+          components: [],
+        });
 
       }
 
     }
 
   } catch (err) {
-    console.error(err);
+    console.error("Failed to update xzhGang log:", err);
   }
 
-  xzhInterview.remove(interview.userId);
+  // Interview already removed automatically after completion.
+  // No need to call xzhInterview.remove()
 
 };
