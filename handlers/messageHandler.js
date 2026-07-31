@@ -308,7 +308,7 @@ if (
       message.channel.id
     );
 
-    await interviewClaim(message);
+    await xzhInterviewClaim(message);
 
     return message.reply(firstQuestion);
   }
