@@ -88,16 +88,14 @@ module.exports = {
 
     if (data.step >= questions.length) {
 
-      completedChannels.add(data.channelId);
+  completedChannels.add(data.channelId);
 
-      const answers = [...data.answers];
+  const answers = [...data.answers];
 
-      interviews.delete(userId);
-
-      return {
-        finished: true,
-        answers,
-      };
+  return {
+    finished: true,
+    answers,
+  };
     }
 
     return {
