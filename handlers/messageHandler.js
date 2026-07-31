@@ -307,13 +307,31 @@ Please wait until your reviewer continues the application.`
 
   if (result.finished) {
 
-    await sendXzhInterviewLog(
-      client,
-      message,
-      result.answers
-    );
+  await sendXzhInterviewLog(
+    client,
+    message,
+    result.answers
+  );
 
-    await message.reply(
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId("xzh_claim")
+      .setLabel("📌 Claim")
+      .setStyle(ButtonStyle.Primary),
+
+    new ButtonBuilder()
+      .setCustomId("xzh_accept")
+      .setLabel("✅ Accept")
+      .setStyle(ButtonStyle.Success),
+
+    new ButtonBuilder()
+      .setCustomId("xzh_reject")
+      .setLabel("❌ Reject")
+      .setStyle(ButtonStyle.Danger)
+  );
+
+  await message.reply({
+    content:
 `✅ Your xzhGang Application has been completed!
 
 📸 Before your application can be reviewed, please complete the following:
@@ -328,13 +346,18 @@ https://discord.gg/zmxx5N628w
 • Main Profile (Display Name)
 • Discord Bio
 
-⚠️ Your application will only be reviewed after both screenshots have been submitted.`
-    );
+⚠️ Your application will only be reviewed after both screenshots have been submitted.
 
-    return;
-  }
+━━━━━━━━━━━━━━━━━━━━━━
 
-  return message.reply(result.question);
+👮 Staff Review Panel`,
+    components: [row],
+  });
+
+  return;
+}
+
+return message.reply(result.question);
   }
 
 };
