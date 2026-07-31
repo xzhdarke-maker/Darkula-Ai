@@ -34,6 +34,7 @@ module.exports = {
       answers: [],
       channelId,
 
+      // V2
       paused: false,
       claimedBy: null,
     });
@@ -77,6 +78,7 @@ module.exports = {
 
     if (!data) return null;
 
+    // Stop interview while claimed
     if (data.paused) {
       return {
         paused: true,
