@@ -190,9 +190,18 @@ module.exports = async (interaction) => {
         content: accepted
           ? `👑 Congratulations!
 
-Your xzhGang Application has been Accepted.
+Your **xzhGang Application** has been **Accepted**! ✅
 
-Welcome to xzhGang!`
+Welcome to **xzhGang**! 🔥
+
+📌 Your application has been successfully approved.
+
+A Leader or Owner will contact you shortly with the next steps.
+
+🔗 Server:
+https://discord.gg/zmxx5N628w
+
+Thank you for choosing xzhGang. We look forward to having you with us! 💙`
           : `👋 Hello!
 
 Unfortunately your **xzhGang Application** has been **Rejected** this time. ❌
