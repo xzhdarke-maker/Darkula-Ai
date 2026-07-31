@@ -14,8 +14,6 @@ module.exports = async (interaction) => {
 
   console.log("CHANNEL:", interaction.channel.id);
 
-  const interview = xzhInterview.findByChannel(interaction.channel.id);
-
   console.log("INTERVIEW:", interview);
 
   if (
