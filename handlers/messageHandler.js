@@ -301,15 +301,18 @@ const data =
   // Start application
   if (!data) {
 
-    const firstQuestion = xzhInterview.start(
-      message.author.id,
-      message.channel.id
-    );
+  // Do not start a new interview if one already exists in this channel
+  if (interview) return;
 
-    await xzhInterviewClaim(message);
+  const firstQuestion = xzhInterview.start(
+    message.author.id,
+    message.channel.id
+  );
 
-    return message.reply(firstQuestion);
-  }
+  await xzhInterviewClaim(message);
+
+  return message.reply(firstQuestion);
+}
 
   // Continue application
   const result = xzhInterview.next(
