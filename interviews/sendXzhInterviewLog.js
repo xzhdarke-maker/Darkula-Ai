@@ -1,10 +1,14 @@
 const {
   EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
 } = require("discord.js");
 
 const config = require("../config");
 
 module.exports = async (client, message, answers) => {
+
   const logChannel = client.channels.cache.get(
     config.channels.interviewLogs
   );
@@ -68,9 +72,30 @@ module.exports = async (client, message, answers) => {
     })
     .setTimestamp();
 
+  const row = new ActionRowBuilder().addComponents(
+
+    new ButtonBuilder()
+      .setCustomId("xzh_claim")
+      .setLabel("📌 Claim")
+      .setStyle(ButtonStyle.Primary),
+
+    new ButtonBuilder()
+      .setCustomId("xzh_accept")
+      .setLabel("✅ Accept")
+      .setStyle(ButtonStyle.Success),
+
+    new ButtonBuilder()
+      .setCustomId("xzh_reject")
+      .setLabel("❌ Reject")
+      .setStyle(ButtonStyle.Danger)
+
+  );
+
   const logMessage = await logChannel.send({
     embeds: [embed],
+    components: [row],
   });
 
   return logMessage;
+
 };
