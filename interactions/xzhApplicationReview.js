@@ -12,9 +12,6 @@ module.exports = async (interaction) => {
 
   if (!interaction.isButton()) return;
 
-  console.log("CHANNEL:", interaction.channel.id);
-
-  console.log("INTERVIEW:", interview);
 
   if (
     interaction.customId !== "xzh_claim" &&
