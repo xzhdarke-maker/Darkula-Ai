@@ -173,8 +173,7 @@ Only the claimed staff member can review it.`,
   /* ==========================
           ACCEPT / REJECT
   ========================== */
-
-  const accepted =
+    const accepted =
     interaction.customId === "xzh_accept";
 
   const applicant =
@@ -199,6 +198,7 @@ Only the claimed staff member can review it.`,
   await interaction.update({
     components: [row],
   });
+
   if (applicant) {
     try {
       await applicant.send({
