@@ -128,6 +128,14 @@ module.exports = {
   },
 
   remove(userId) {
+
+    const data = interviews.get(userId);
+
+    if (!data) return false;
+
+    completedChannels.delete(data.channelId);
     interviews.delete(userId);
+
+    return true;
   },
 };
