@@ -292,7 +292,11 @@ Please wait for manual assistance.`
     return;
   }
 
-  const data = xzhInterview.interviews.get(message.author.id);
+  const interview = xzhInterview.findByChannel(message.channel.id);
+
+const data =
+  xzhInterview.interviews.get(message.author.id) ||
+  interview?.data;
 
   // Start application
   if (!data) {
