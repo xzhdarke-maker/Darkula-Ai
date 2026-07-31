@@ -35,7 +35,6 @@ module.exports = {
       channelId,
       paused: false,
       claimedBy: null,
-      finished: false,
     });
 
     return questions[0];
@@ -84,5 +83,45 @@ module.exports = {
       };
     }
 
+    data.answers.push(answer);
+    data.step++;
 
-    
+    if (data.step >= questions.length) {
+
+      completedChannels.add(data.channelId);
+
+      const answers = [...data.answers];
+
+      interviews.delete(userId);
+
+      return {
+        finished: true,
+        answers,
+      };
+    }
+
+    return {
+      finished: false,
+      question: questions[data.step],
+    };
+  },
+
+  findByChannel(channelId) {
+
+    for (const [userId, data] of interviews.entries()) {
+
+      if (data.channelId === channelId) {
+
+        return {
+          userId,
+          data,
+        };
+
+      }
+
+    }
+
+    return null;
+  },
+
+};
