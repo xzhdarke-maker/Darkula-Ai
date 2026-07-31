@@ -129,13 +129,12 @@ module.exports = {
 
   remove(userId) {
 
-    const data = interviews.get(userId);
+  const data = interviews.get(userId);
 
-    if (!data) return false;
+  if (!data) return false;
 
-    completedChannels.delete(data.channelId);
-    interviews.delete(userId);
+  interviews.delete(userId);
 
-    return true;
-  },
+  return true;
+  }
 };
