@@ -35,6 +35,7 @@ module.exports = {
       channelId,
       paused: false,
       claimedBy: null,
+      finished: false,
     });
 
     return questions[0];
@@ -88,14 +89,14 @@ module.exports = {
 
     if (data.step >= questions.length) {
 
-  completedChannels.add(data.channelId);
+      completedChannels.add(data.channelId);
 
-  data.finished = true;
+      data.finished = true;
 
-  return {
-    finished: true,
-    answers: [...data.answers],
-  };
+      return {
+        finished: true,
+        answers: [...data.answers],
+      };
     }
 
     return {
