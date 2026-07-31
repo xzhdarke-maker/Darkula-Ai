@@ -33,9 +33,9 @@ module.exports = {
       step: 0,
       answers: [],
       channelId,
+
       paused: false,
       claimedBy: null,
-      finished: false,
     });
 
     return questions[0];
@@ -93,9 +93,11 @@ module.exports = {
 
       data.finished = true;
 
+      const answers = [...data.answers];
+
       return {
         finished: true,
-        answers: [...data.answers],
+        answers,
       };
     }
 
@@ -122,5 +124,4 @@ module.exports = {
 
     return null;
   },
-
 };
