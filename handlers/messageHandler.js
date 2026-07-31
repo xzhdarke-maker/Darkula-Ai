@@ -289,6 +289,8 @@ Please wait for manual assistance.`
       message.channel.id
     );
 
+    await interviewClaim(message);
+
     return message.reply(firstQuestion);
   }
 
