@@ -287,9 +287,14 @@ Please wait for manual assistance.`
 
   if (isXzhTicket) {
 
-  if (xzhInterview.completedChannels.has(message.channel.id)) {
+  const interview = xzhInterview.findByChannel(message.channel.id);
+
+if (
+    xzhInterview.completedChannels.has(message.channel.id) &&
+    !interview
+) {
     return;
-  }
+}
 
   const data = xzhInterview.interviews.get(message.author.id);
 
