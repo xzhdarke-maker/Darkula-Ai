@@ -174,6 +174,8 @@ Only the claimed staff member can review it.`,
           ACCEPT / REJECT
   ========================== */
 
+  await interaction.deferUpdate();
+
   const accepted =
     interaction.customId === "xzh_accept";
 
