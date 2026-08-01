@@ -273,79 +273,53 @@ https://discord.gg/uaN7BfZppF`
     return message.reply(result.question);
   }
     /* ==========================
-        XZHGANG APPLY
-  ========================== */
+      XZHGANG APPLY
+========================== */
 
-  if (isXzhTicket) {
+if (isXzhTicket) {
 
-    const interview = xzhInterview.findByChannel(
+  if (xzhInterview.completedChannels.has(message.channel.id)) {
+    return;
+  }
+
+  const interview = xzhInterview.findByChannel(
+    message.channel.id
+  );
+
+  const data =
+    xzhInterview.interviews.get(message.author.id) ||
+    interview?.data;
+
+  if (!data) {
+
+    const firstQuestion = xzhInterview.start(
+      message.author.id,
       message.channel.id
     );
 
-    const data =
-      xzhInterview.interviews.get(message.author.id) ||
-      interview?.data;
+    await xzhInterviewClaim(message);
 
-    if (
-      xzhInterview.completedChannels.has(message.channel.id) &&
-      !interview
-    ) {
-      return;
-    }
+    return message.reply(firstQuestion);
+  }
 
-    // Start application
-    if (!data) {
+  const result = xzhInterview.next(
+    interview ? interview.userId : message.author.id,
+    message.content
+  );
 
-      const firstQuestion = xzhInterview.start(
-        message.author.id,
-        message.channel.id
-      );
+  if (result?.paused) {
+    return;
+  }
 
-      await xzhInterviewClaim(message);
+  if (result.finished) {
 
-      return message.reply(firstQuestion);
-    }
-
-    // Continue application
-    const result = xzhInterview.next(
-      interview ? interview.userId : message.author.id,
-      message.content
+    await sendXzhInterviewLog(
+      client,
+      message,
+      result.answers
     );
 
-    // Claimed by staff
-    if (result?.paused) {
-      return;
-    }
-
-    if (result.finished) {
-
-      await sendXzhInterviewLog(
-        client,
-        message,
-        result.answers
-      );
-
-      const row = new ActionRowBuilder().addComponents(
-
-        new ButtonBuilder()
-          .setCustomId("xzh_claim")
-          .setLabel("📌 Claim")
-          .setStyle(ButtonStyle.Primary),
-
-        new ButtonBuilder()
-          .setCustomId("xzh_accept")
-          .setLabel("✅ Accept")
-          .setStyle(ButtonStyle.Success),
-
-        new ButtonBuilder()
-          .setCustomId("xzh_reject")
-          .setLabel("❌ Reject")
-          .setStyle(ButtonStyle.Danger)
-
-      );
-
-      await message.reply({
-        content:
+    await message.reply(
 `✅ Your xzhGang Application has been completed!
 
 📸 Before your application can be reviewed, please complete:
@@ -358,15 +332,12 @@ https://discord.gg/zmxx5N628w
 
 📷 Send these screenshots:
 • Main Profile
-• Bio
+• Bio`
+    );
 
-👮 Staff Review Panel`,
-        components: [row],
-      });
-
-      return;
-    }
-
-    return message.reply(result.question);
+    return;
   }
+
+  return message.reply(result.question);
+}
   };
