@@ -10,7 +10,7 @@ module.exports = async (message) => {
 
     new ButtonBuilder()
       .setCustomId("xzh_claim")
-      .setLabel("📌 Claim")
+      .setLabel("📌 Claim Application")
       .setStyle(ButtonStyle.Primary),
 
     new ButtonBuilder()
