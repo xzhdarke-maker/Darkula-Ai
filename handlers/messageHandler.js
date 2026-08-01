@@ -8,7 +8,10 @@ const config = require("../config");
 const ai = require("./ai");
 
 const detectLanguage = require("../utils/language");
-const { getHistory, saveHistory } = require("../utils/memory");
+const {
+  getHistory,
+  saveHistory,
+} = require("../utils/memory");
 
 const userInfo = require("../commands/userinfo");
 const helpCommand = require("../commands/help");
@@ -98,7 +101,6 @@ module.exports = async (client, message) => {
         model: "deepseek/deepseek-chat-v3",
 
         messages: [
-
           {
             role: "system",
             content: `You are Darkula AI, the official AI assistant of Dark Community.
@@ -145,6 +147,7 @@ https://discord.gg/uaN7BfZppF`
         "❌ AI is currently unavailable."
       );
     }
+
   }
     /* ==========================
         BOT COMMANDS
@@ -164,21 +167,18 @@ https://discord.gg/uaN7BfZppF`
       message,
       content
     );
-
     if (infoHandled) return;
 
     const promotionHandled = await promotionInfo(
       message,
       content
     );
-
     if (promotionHandled) return;
 
     const faqHandled = await faq(
       message,
       content
     );
-
     if (faqHandled) return;
 
     const lower = content.toLowerCase();
@@ -195,8 +195,26 @@ https://discord.gg/uaN7BfZppF`
     if (
       lower.startsWith("userinfo") ||
       lower.startsWith("user info") ||
-      lower === "my
-        /* ==========================
+      lower === "my info" ||
+      lower === "who am i" ||
+      lower === "about me"
+    ) {
+      return userInfo.execute(message);
+    }
+
+    return message.reply(
+      "❌ Unknown command.\nUse a valid command."
+    );
+  }
+
+  /* ==========================
+        SUPPORT TICKETS
+  ========================== */
+
+  if (isSupportTicket) {
+    return;
+  }
+    /* ==========================
         STAFF APPLY
   ========================== */
 
@@ -206,7 +224,9 @@ https://discord.gg/uaN7BfZppF`
       return;
     }
 
-    const interview = staffInterview.findByChannel(message.channel.id);
+    const interview = staffInterview.findByChannel(
+      message.channel.id
+    );
 
     const data =
       staffInterview.interviews.get(message.author.id) ||
@@ -242,7 +262,7 @@ https://discord.gg/uaN7BfZppF`
       );
 
       await message.reply(
-`✅ **Your Staff Interview has been completed!**
+`✅ Your Staff Interview has been completed!
 
 📝 Your application has been sent to the Staff Team for review.`
       );
@@ -251,8 +271,8 @@ https://discord.gg/uaN7BfZppF`
     }
 
     return message.reply(result.question);
-      }
-      /* ==========================
+  }
+    /* ==========================
         XZHGANG APPLY
   ========================== */
 
@@ -349,4 +369,4 @@ https://discord.gg/zmxx5N628w
 
     return message.reply(result.question);
   }
-    };
+  };
