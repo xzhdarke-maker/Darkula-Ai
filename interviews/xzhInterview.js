@@ -34,7 +34,6 @@ module.exports = {
       answers: [],
       channelId,
 
-      // V2
       paused: false,
       claimedBy: null,
     });
@@ -78,7 +77,6 @@ module.exports = {
 
     if (!data) return null;
 
-    // Stop interview while claimed
     if (data.paused) {
       return {
         paused: true,
@@ -126,15 +124,4 @@ module.exports = {
 
     return null;
   },
-
-  remove(userId) {
-
-  const data = interviews.get(userId);
-
-  if (!data) return false;
-
-  interviews.delete(userId);
-
-  return true;
-  }
 };
