@@ -171,40 +171,42 @@ Only the claimed staff member can review it.`,
     return;
   }
     /* ==========================
-          ACCEPT / REJECT
-  ========================== */
+      ACCEPT / REJECT
+========================== */
 
-  const accepted =
-    interaction.customId === "xzh_accept";
+const accepted =
+  interaction.customId === "xzh_accept";
 
-  const applicant =
-    await client.users.fetch(interview.userId).catch(() => null);
+await interaction.deferUpdate();
 
-  const row = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-      .setCustomId("review_done")
-      .setLabel(
-        accepted
-          ? `✅ Accepted by ${interaction.user.username}`
-          : `❌ Rejected by ${interaction.user.username}`
-      )
-      .setStyle(
-        accepted
-          ? ButtonStyle.Success
-          : ButtonStyle.Danger
-      )
-      .setDisabled(true)
-  );
+const applicant =
+  await client.users.fetch(interview.userId).catch(() => null);
 
-  await interaction.update({
+const row = new ActionRowBuilder().addComponents(
+  new ButtonBuilder()
+    .setCustomId("review_done")
+    .setLabel(
+      accepted
+        ? `✅ Accepted by ${interaction.user.username}`
+        : `❌ Rejected by ${interaction.user.username}`
+    )
+    .setStyle(
+      accepted
+        ? ButtonStyle.Success
+        : ButtonStyle.Danger
+    )
+    .setDisabled(true)
+);
+
+await interaction.message.edit({
   components: [row],
 });
 
-  if (applicant) {
-    try {
-      await applicant.send({
-        content: accepted
-          ? `👑 Congratulations!
+if (applicant) {
+  try {
+    await applicant.send({
+      content: accepted
+        ? `👑 Congratulations!
 
 Your **xzhGang Application** has been **Accepted**!
 
@@ -212,7 +214,7 @@ A Leader or Owner will contact you shortly.
 
 Server:
 ${config.server.invite}`
-          : `Hello!
+        : `Hello!
 
 Unfortunately your **xzhGang Application** has been **Rejected** this time.
 
@@ -220,75 +222,77 @@ You can always apply again in the future.
 
 Server:
 ${config.server.invite}`,
-      });
-    } catch {}
-  }
+    });
+  } catch {}
+}
 
-  await interaction.followUp({
-    content: accepted
-      ? `✅ ${interaction.user} accepted this xzhGang Application.`
-      : `❌ ${interaction.user} rejected this xzhGang Application.`,
-  });
+await interaction.followUp({
+  content: accepted
+    ? `✅ ${interaction.user} accepted this xzhGang Application.`
+    : `❌ ${interaction.user} rejected this xzhGang Application.`,
+});
 
-  try {
+try {
 
-    const logChannel = client.channels.cache.get(
-      config.channels.interviewLogs
+  const logChannel = client.channels.cache.get(
+    config.channels.interviewLogs
+  );
+
+  if (logChannel) {
+
+    const messages = await logChannel.messages.fetch({
+      limit: 20,
+    });
+
+    const logMessage = messages.find(
+      (m) =>
+        m.embeds.length &&
+        m.embeds[0].footer &&
+        m.embeds[0].footer.text &&
+        m.embeds[0].footer.text.includes(interview.userId)
     );
 
-    if (logChannel) {
+    if (logMessage) {
 
-      const messages = await logChannel.messages.fetch({
-        limit: 20,
+      const embed = logMessage.embeds[0];
+
+      const fields = [...embed.fields];
+
+      fields.push({
+        name: "📋 Status",
+        value: accepted
+          ? "🟢 Accepted"
+          : "🔴 Rejected",
+        inline: true,
       });
 
-      const logMessage = messages.find(
-        (m) =>
-          m.embeds.length &&
-          m.embeds[0].footer &&
-          m.embeds[0].footer.text &&
-          m.embeds[0].footer.text.includes(interview.userId)
-      );
+      fields.push({
+        name: "👑 Reviewed By",
+        value: `${interaction.user}`,
+        inline: true,
+      });
 
-      if (logMessage) {
-
-        const embed = logMessage.embeds[0];
-
-        const fields = [...embed.fields];
-
-        fields.push({
-          name: "📋 Status",
-          value: accepted
-            ? "🟢 Accepted"
-            : "🔴 Rejected",
-          inline: true,
-        });
-
-        fields.push({
-          name: "👑 Reviewed By",
-          value: `${interaction.user}`,
-          inline: true,
-        });
-
-        await logMessage.edit({
-          embeds: [
-            {
-              ...embed.data,
-              fields,
-            },
-          ],
-        });
-
-      }
+      await logMessage.edit({
+        embeds: [
+          {
+            ...embed.data,
+            fields,
+          },
+        ],
+      });
 
     }
 
-  } catch (err) {
-    console.error(err);
   }
 
-  xzhInterview.completedChannels.add(interaction.channel.id);
+} catch (err) {
+  console.error(err);
+}
 
-  xzhInterview.remove(interview.userId);
+xzhInterview.completedChannels.add(interaction.channel.id);
+
+xzhInterview.remove(interview.userId);
+
+return;
 
 };
