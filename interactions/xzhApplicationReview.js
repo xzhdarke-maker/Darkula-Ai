@@ -196,7 +196,7 @@ Only the claimed staff member can review it.`,
       .setDisabled(true)
   );
 
-  await interaction.editReply({
+  await interaction.update({
   components: [row],
 });
 
