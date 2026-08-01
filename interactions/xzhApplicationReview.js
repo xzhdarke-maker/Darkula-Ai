@@ -81,11 +81,11 @@ Only the claimed staff member can review it.`,
       ephemeral: true,
     });
   }
-
-  /* ==========================
+    /* ==========================
          CLAIM APPLICATION
   ========================== */
-    if (interaction.customId === "xzh_claim") {
+
+  if (interaction.customId === "xzh_claim") {
 
     xzhInterview.pause(
       interview.userId,
@@ -126,8 +126,7 @@ Only the claimed staff member can review it.`,
 
     return;
   }
-
-  /* ==========================
+    /* ==========================
         UNCLAIM APPLICATION
   ========================== */
 
@@ -169,11 +168,11 @@ Only the claimed staff member can review it.`,
 
     return;
   }
-
-  /* ==========================
+    /* ==========================
           ACCEPT / REJECT
   ========================== */
-    const accepted =
+
+  const accepted =
     interaction.customId === "xzh_accept";
 
   const applicant =
@@ -287,5 +286,4 @@ ${config.server.invite}`,
   }
 
   xzhInterview.remove(interview.userId);
-
 };
