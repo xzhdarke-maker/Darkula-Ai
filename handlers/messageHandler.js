@@ -273,7 +273,7 @@ https://discord.gg/uaN7BfZppF`
     return message.reply(result.question);
   }
     /* ==========================
-      XZHGANG APPLY
+        XZHGANG APPLY
 ========================== */
 
 if (isXzhTicket) {
@@ -322,17 +322,7 @@ if (isXzhTicket) {
     await message.reply(
 `✅ Your xzhGang Application has been completed!
 
-📸 Before your application can be reviewed, please complete:
-
-👑 Change your Discord Display Name
-Example: xzhDarkula ✓
-
-🔗 Add this invite to your Discord Bio:
-https://discord.gg/zmxx5N628w
-
-📷 Send these screenshots:
-• Main Profile
-• Bio`
+📝 Your application has been sent to the Staff Team for review.`
     );
 
     return;
