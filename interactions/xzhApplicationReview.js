@@ -287,6 +287,8 @@ ${config.server.invite}`,
     console.error(err);
   }
 
+  xzhInterview.completedChannels.add(interaction.channel.id);
+
   xzhInterview.remove(interview.userId);
 
 };
