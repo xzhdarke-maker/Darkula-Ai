@@ -287,4 +287,6 @@ ${config.server.invite}`,
     console.error(err);
   }
 
+  xzhInterview.remove(interview.userId);
+
 };
