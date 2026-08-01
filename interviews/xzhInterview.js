@@ -124,4 +124,15 @@ module.exports = {
 
     return null;
   },
+
+    remove(userId) {
+
+    const data = interviews.get(userId);
+
+    if (!data) return false;
+
+    interviews.delete(userId);
+
+    return true;
+  }
 };
