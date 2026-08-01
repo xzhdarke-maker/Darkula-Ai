@@ -9,7 +9,6 @@ const ai = require("./ai");
 
 const detectLanguage = require("../utils/language");
 const { getHistory, saveHistory } = require("../utils/memory");
-const constants = require("../utils/constants");
 
 const userInfo = require("../commands/userinfo");
 const helpCommand = require("../commands/help");
@@ -22,15 +21,18 @@ const faq = require("../knowledge/faq");
 const staffInterview = require("../interviews/staffInterview");
 const sendInterviewLog = require("../interviews/sendInterviewLog");
 const interviewClaim = require("../interviews/interviewClaim");
-const xzhInterviewClaim = require("../interviews/xzhInterviewClaim");
+
 const xzhInterview = require("../interviews/xzhInterview");
 const sendXzhInterviewLog = require("../interviews/sendXzhInterviewLog");
+const xzhInterviewClaim = require("../interviews/xzhInterviewClaim");
 
 module.exports = async (client, message) => {
+
   if (!message.guild) return;
   if (message.author.bot) return;
 
   const isMentioned = message.mentions.has(client.user);
+
   const channelId = message.channel.id;
   const categoryId = message.channel.parentId;
 
@@ -49,7 +51,6 @@ module.exports = async (client, message) => {
   const isXzhTicket =
     categoryId === config.categories.xzhGang;
 
-  // Ignore unrelated channels
   if (
     !isMainChat &&
     !isBotCommands &&
@@ -59,8 +60,7 @@ module.exports = async (client, message) => {
   ) {
     return;
   }
-
-  /* ==========================
+    /* ==========================
           MAIN CHAT
   ========================== */
 
@@ -72,311 +72,281 @@ module.exports = async (client, message) => {
       .replace(`<@${client.user.id}>`, "")
       .replace(`<@!${client.user.id}>`, "")
       .trim();
-  
+
     if (!content.length) {
       return message.reply(
         "👋 Hi! Mention me and ask your question."
       );
     }
 
-    const language = detectLanguage(content);
+    const handled = await serverKnowledge(message, content);
+    if (handled) return;
 
-console.log("MAIN CHAT:", content);
+    const faqHandled = await faq(message, content);
+    if (faqHandled) return;
 
-const handled = await serverKnowledge(message, content);
+    saveHistory(message.author.id, "user", content);
 
-console.log("handled =", handled);
+    const history = getHistory(message.author.id);
 
-if (handled) return;
+    await message.channel.sendTyping();
 
-const faqHandled = await faq(message, content);
+    try {
 
-console.log("faqHandled =", faqHandled);
-
-if (faqHandled) return;
-
-saveHistory(message.author.id, "user", content);
-
-const history = getHistory(message.author.id);
-
-await message.channel.sendTyping();
-        try {
       const response = await ai.chat.completions.create({
-  model: "deepseek/deepseek-chat-v3",
 
-  messages: [
-    {
-      role: "system",
-      content: `You are Darkula AI, the official AI assistant of Dark Community.
+        model: "deepseek/deepseek-chat-v3",
+
+        messages: [
+
+          {
+            role: "system",
+            content: `You are Darkula AI, the official AI assistant of Dark Community.
 
 Rules:
 - Reply only in English or Banglish.
 - Never use Bangla script.
-- Be smart, friendly and professional.
-- Keep replies short unless asked for details.
-- Never expose API keys or internal information.
 - Never say you are ChatGPT.
 - Say you are Darkula AI.
+- Keep replies short unless asked for details.
+- Never invent server information.
+- Official invite:
+https://discord.gg/uaN7BfZppF`
+          },
 
-Server Rules:
-- Never make up or guess any information about Dark Community.
-- Only provide server information that is officially configured or verified.
-- Never invent Discord invite links.
-- Never invent channel names, role names, member counts, staff names, server features, or rules.
-- If the user asks for the server invite, ALWAYS use the official invite:
-https://discord.gg/uaN7BfZppF
-- If you don't know a server-related answer, reply:
-"I don't have verified information about that. Please ask a staff member or check the appropriate server channel."
-- Never pretend to know server information that has not been provided to you.`
-    },
+          ...history,
 
-    ...history,
+          {
+            role: "user",
+            content
+          }
 
-    {
-      role: "user",
-      content
-    }
-  ]
-});
+        ]
 
-const reply = response.choices[0].message.content;
+      });
 
-saveHistory(message.author.id, "model", reply);
+      const reply = response.choices[0].message.content;
 
-return message.reply(reply);
+      saveHistory(message.author.id, "model", reply);
+
+      return message.reply(reply);
 
     } catch (err) {
-  console.error(err);
 
-  if (err.status === 429) {
-  return message.reply(
-    "⚠️ OpenRouter rate limit reached. Please try again later."
-    );
+      console.error(err);
+
+      if (err.status === 429) {
+        return message.reply(
+          "⚠️ OpenRouter rate limit reached. Please try again later."
+        );
+      }
+
+      return message.reply(
+        "❌ AI is currently unavailable."
+      );
+    }
   }
-
-  return message.reply(
-    "❌ AI is currently unavailable."
-  );
-        }
-
-  }
-
-  /* ==========================
+    /* ==========================
         BOT COMMANDS
   ========================== */
 
   if (isBotCommands) {
 
-  if (!isMentioned) return;
+    if (!isMentioned) return;
 
-  const content = message.content
-    .replace(`<@${client.user.id}>`, "")
-    .replace(`<@!${client.user.id}>`, "")
-    .trim();
+    const content = message.content
+      .replace(`<@${client.user.id}>`, "")
+      .replace(`<@!${client.user.id}>`, "")
+      .trim();
 
-  const infoHandled = await serverInfo(client, message, content);
-  if (infoHandled) return;
+    const infoHandled = await serverInfo(
+      client,
+      message,
+      content
+    );
 
-    const promotionHandled = await promotionInfo(message, content);
-if (promotionHandled) return;
+    if (infoHandled) return;
 
-    const faqHandled = await faq(message, content);
-if (faqHandled) return;
-    
-  const lower = content.toLowerCase();
+    const promotionHandled = await promotionInfo(
+      message,
+      content
+    );
+
+    if (promotionHandled) return;
+
+    const faqHandled = await faq(
+      message,
+      content
+    );
+
+    if (faqHandled) return;
+
+    const lower = content.toLowerCase();
 
     if (
-  lower === "help" ||
-  lower === "commands" ||
-  lower === "command" ||
-  lower === "help command"
-) {
-  return helpCommand.execute(message);
+      lower === "help" ||
+      lower === "commands" ||
+      lower === "command" ||
+      lower === "help command"
+    ) {
+      return helpCommand.execute(message);
     }
 
-  if (
-    lower.startsWith("userinfo") ||
-    lower.startsWith("user info") ||
-    lower === "my info" ||
-    lower === "who am i" ||
-    lower === "about me"
-  ) {
-    return userInfo.execute(message);
-  }
-
-  return message.reply(
-    "❌ Unknown command.\nUse a valid command."
-  );
-  }
-
-  /* ==========================
-        TICKET SYSTEM
+    if (
+      lower.startsWith("userinfo") ||
+      lower.startsWith("user info") ||
+      lower === "my
+        /* ==========================
+        STAFF APPLY
   ========================== */
-
-  if (isSupportTicket) {
-    // Help & Support / Claim Rewards / Paid Support
-    return;
-  }
 
   if (isStaffTicket) {
 
-  if (staffInterview.completedChannels.has(message.channel.id)) {
-  return;
-}
+    if (staffInterview.completedChannels.has(message.channel.id)) {
+      return;
+    }
 
-const data = staffInterview.interviews.get(message.author.id);
+    const interview = staffInterview.findByChannel(message.channel.id);
 
-// Start interview
-if (!data) {
+    const data =
+      staffInterview.interviews.get(message.author.id) ||
+      interview?.data;
 
-  const firstQuestion = staffInterview.start(
-    message.author.id,
-    message.channel.id
-  );
+    if (!data) {
 
-  await interviewClaim(message);
+      const firstQuestion = staffInterview.start(
+        message.author.id,
+        message.channel.id
+      );
 
-  return message.reply(firstQuestion);
-}
+      await interviewClaim(message);
 
-  // Continue interview
-const result = staffInterview.next(
-  message.author.id,
-  message.content
-);
+      return message.reply(firstQuestion);
+    }
 
-// Interview paused because a staff claimed it
-if (result?.paused) {
-  return message.reply(
-    `📌 This interview has been claimed by <@${result.claimedBy}>.
+    const result = staffInterview.next(
+      interview ? interview.userId : message.author.id,
+      message.content
+    );
 
-Please wait for manual assistance.`
-  );
-}
+    if (result?.paused) {
+      return;
+    }
 
-  if (result.finished) {
+    if (result.finished) {
 
-  await sendInterviewLog(
-    client,
-    message,
-    result.answers
-  );
+      await sendInterviewLog(
+        client,
+        message,
+        result.answers
+      );
 
-  await message.reply(
+      await message.reply(
 `✅ **Your Staff Interview has been completed!**
 
-📋 **Interview Summary**
-
-👤 **Name:** ${result.answers[0]}
-🎂 **Age:** ${result.answers[1]}
-🌍 **Country:** ${result.answers[2]}
-🕒 **Timezone:** ${result.answers[3]}
-⏰ **Daily Activity:** ${result.answers[4]}
-💼 **Experience:** ${result.answers[5]}
-❤️ **Why Join:** ${result.answers[6]}
-⭐ **Why Should We Choose You:** ${result.answers[7]}
-✅ **Rules Accepted:** ${result.answers[8]}
-
 📝 Your application has been sent to the Staff Team for review.`
-  );
+      );
 
-  return;
-  }
+      return;
+    }
 
-  return message.reply(result.question);
-  }
+    return message.reply(result.question);
+      }
+      /* ==========================
+        XZHGANG APPLY
+  ========================== */
 
   if (isXzhTicket) {
 
-  if (xzhInterview.completedChannels.has(message.channel.id)) {
-    return;
-  }
-
-  const interview = xzhInterview.findByChannel(message.channel.id);
-
-const data =
-  xzhInterview.interviews.get(message.author.id) ||
-  interview?.data;
-
-  // Start application
-  if (!data) {
-
-  // Do not start a new interview if one already exists in this channel
-  if (interview) return;
-
-  const firstQuestion = xzhInterview.start(
-    message.author.id,
-    message.channel.id
-  );
-
-  await xzhInterviewClaim(message);
-
-  return message.reply(firstQuestion);
-}
-
-  // Continue application
-  const result = xzhInterview.next(
-    message.author.id,
-    message.content
-  );
-
-  // Application paused because claimed
-  if (result?.paused) {
-    return;
-  }
-
-  if (result.finished) {
-
-    await sendXzhInterviewLog(
-      client,
-      message,
-      result.answers
+    const interview = xzhInterview.findByChannel(
+      message.channel.id
     );
 
-    const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId("xzh_claim")
-        .setLabel("📌 Claim")
-        .setStyle(ButtonStyle.Primary),
+    const data =
+      xzhInterview.interviews.get(message.author.id) ||
+      interview?.data;
 
-      new ButtonBuilder()
-        .setCustomId("xzh_accept")
-        .setLabel("✅ Accept")
-        .setStyle(ButtonStyle.Success),
+    if (
+      xzhInterview.completedChannels.has(message.channel.id) &&
+      !interview
+    ) {
+      return;
+    }
 
-      new ButtonBuilder()
-        .setCustomId("xzh_reject")
-        .setLabel("❌ Reject")
-        .setStyle(ButtonStyle.Danger)
+    // Start application
+    if (!data) {
+
+      const firstQuestion = xzhInterview.start(
+        message.author.id,
+        message.channel.id
+      );
+
+      await xzhInterviewClaim(message);
+
+      return message.reply(firstQuestion);
+    }
+
+    // Continue application
+    const result = xzhInterview.next(
+      interview ? interview.userId : message.author.id,
+      message.content
     );
 
-    await message.reply({
-      content: `✅ Your xzhGang Application has been completed!
+    // Claimed by staff
+    if (result?.paused) {
+      return;
+    }
 
-📸 Before your application can be reviewed, please complete the following:
+    if (result.finished) {
 
-👑 Change your Discord Display Name:
+      await sendXzhInterviewLog(
+        client,
+        message,
+        result.answers
+      );
+
+      const row = new ActionRowBuilder().addComponents(
+
+        new ButtonBuilder()
+          .setCustomId("xzh_claim")
+          .setLabel("📌 Claim")
+          .setStyle(ButtonStyle.Primary),
+
+        new ButtonBuilder()
+          .setCustomId("xzh_accept")
+          .setLabel("✅ Accept")
+          .setStyle(ButtonStyle.Success),
+
+        new ButtonBuilder()
+          .setCustomId("xzh_reject")
+          .setLabel("❌ Reject")
+          .setStyle(ButtonStyle.Danger)
+
+      );
+
+      await message.reply({
+        content:
+`✅ Your xzhGang Application has been completed!
+
+📸 Before your application can be reviewed, please complete:
+
+👑 Change your Discord Display Name
 Example: xzhDarkula ✓
 
 🔗 Add this invite to your Discord Bio:
 https://discord.gg/zmxx5N628w
 
-📷 Send these screenshots in this ticket:
-• Main Profile (Display Name)
-• Discord Bio
-
-⚠️ Your application will only be reviewed after both screenshots have been submitted.
-
-━━━━━━━━━━━━━━━━━━━━━━
+📷 Send these screenshots:
+• Main Profile
+• Bio
 
 👮 Staff Review Panel`,
-      components: [row],
-    });
+        components: [row],
+      });
 
-    return;
+      return;
+    }
+
+    return message.reply(result.question);
   }
-
-        return message.reply(result.question);
-  }
-
-};
+    };
