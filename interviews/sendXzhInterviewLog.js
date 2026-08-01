@@ -1,8 +1,5 @@
 const {
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
 } = require("discord.js");
 
 const config = require("../config");
@@ -16,7 +13,7 @@ module.exports = async (client, message, answers) => {
   if (!logChannel) return;
 
   const embed = new EmbedBuilder()
-    .setColor("#9B59B6")
+    .setColor("#5865F2")
     .setTitle("👑 New xzhGang Application")
     .setDescription(
       "A new xzhGang Apply interview has been completed."
@@ -28,7 +25,7 @@ module.exports = async (client, message, answers) => {
         inline: true,
       },
       {
-        name: "👮 Claimed By",
+        name: "👑 Claimed By",
         value: "Not Claimed",
         inline: true,
       },
@@ -72,30 +69,9 @@ module.exports = async (client, message, answers) => {
     })
     .setTimestamp();
 
-  const row = new ActionRowBuilder().addComponents(
-
-    new ButtonBuilder()
-      .setCustomId("xzh_claim")
-      .setLabel("📌 Claim")
-      .setStyle(ButtonStyle.Primary),
-
-    new ButtonBuilder()
-      .setCustomId("xzh_accept")
-      .setLabel("✅ Accept")
-      .setStyle(ButtonStyle.Success),
-
-    new ButtonBuilder()
-      .setCustomId("xzh_reject")
-      .setLabel("❌ Reject")
-      .setStyle(ButtonStyle.Danger)
-
-  );
-
   const logMessage = await logChannel.send({
     embeds: [embed],
-    components: [row],
   });
 
   return logMessage;
-
 };
