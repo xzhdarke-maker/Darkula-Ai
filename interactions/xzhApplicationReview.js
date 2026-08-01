@@ -81,7 +81,8 @@ Only the claimed staff member can review it.`,
       ephemeral: true,
     });
   }
-    /* ==========================
+
+  /* ==========================
          CLAIM APPLICATION
   ========================== */
 
@@ -126,7 +127,8 @@ Only the claimed staff member can review it.`,
 
     return;
   }
-    /* ==========================
+
+  /* ==========================
         UNCLAIM APPLICATION
   ========================== */
 
@@ -285,5 +287,4 @@ ${config.server.invite}`,
     console.error(err);
   }
 
-  xzhInterview.remove(interview.userId);
 };
