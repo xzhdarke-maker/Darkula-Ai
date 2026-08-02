@@ -20,6 +20,7 @@ const serverKnowledge = require("../knowledge/serverKnowledge");
 const serverInfo = require("../knowledge/serverInfo");
 const promotionInfo = require("../knowledge/promotionInfo");
 const faq = require("../knowledge/faq");
+const securityRules = require("../knowledge/securityRules");
 
 const staffInterview = require("../interviews/staffInterview");
 const sendInterviewLog = require("../interviews/sendInterviewLog");
